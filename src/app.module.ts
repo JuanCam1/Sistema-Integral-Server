@@ -26,16 +26,16 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get('DATABASE_HOST'),
-        port: configService.get('DATABASE_PORT'),
-        username: configService.get('USERNAME_DB'),
-        password: configService.get('PASSWORD_DB'),
-        database: configService.get('DATABASE'),
+        type: "mysql",
+        host: configService.get("DATABASE_HOST"),
+        port: configService.get("DATABASE_PORT"),
+        username: configService.get("USERNAME_DB"),
+        password: configService.get("PASSWORD_DB"),
+        database: configService.get("DATABASE"),
         retryDelay: 3000,
         autoLoadEntities: true,
         synchronize: true,
-      })
+      }),
     }),
     AreaModule,
     CompanyModule,
@@ -52,4 +52,4 @@ import { TypeOrmModule } from "@nestjs/typeorm";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

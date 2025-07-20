@@ -7,5 +7,5 @@
   "useTabs": false,
   "semi": true,
   "arrowParens": "always",
-  "endOfLine": "lf"
+  "endOfLine": "auto"
 }

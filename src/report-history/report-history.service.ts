@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReportHistoryDto } from './dto/create-report-history.dto';
-import { UpdateReportHistoryDto } from './dto/update-report-history.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateReportHistoryDto } from "./dto/create-report-history.dto";
+import { UpdateReportHistoryDto } from "./dto/update-report-history.dto";
 
 @Injectable()
 export class ReportHistoryService {
   create(createReportHistoryDto: CreateReportHistoryDto) {
-    return 'This action adds a new reportHistory';
+    return "This action adds a new reportHistory";
   }
 
   findAll() {

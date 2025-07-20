@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PeriodicityService } from './periodicity.service';
-import { CreatePeriodicityDto } from './dto/create-periodicity.dto';
-import { UpdatePeriodicityDto } from './dto/update-periodicity.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { PeriodicityService } from "./periodicity.service";
+import { CreatePeriodicityDto } from "./dto/create-periodicity.dto";
+import { UpdatePeriodicityDto } from "./dto/update-periodicity.dto";
 
-@Controller('periodicity')
+@Controller("periodicity")
 export class PeriodicityController {
   constructor(private readonly periodicityService: PeriodicityService) {}
 
@@ -17,18 +25,21 @@ export class PeriodicityController {
     return this.periodicityService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.periodicityService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePeriodicityDto: UpdatePeriodicityDto) {
+  @Patch(":id")
+  update(
+    @Param("id") id: string,
+    @Body() updatePeriodicityDto: UpdatePeriodicityDto,
+  ) {
     return this.periodicityService.update(+id, updatePeriodicityDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.periodicityService.remove(+id);
   }
 }

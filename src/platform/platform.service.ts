@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePlatformDto } from './dto/create-platform.dto';
-import { UpdatePlatformDto } from './dto/update-platform.dto';
+import { Injectable } from "@nestjs/common";
+import { CreatePlatformDto } from "./dto/create-platform.dto";
+import { UpdatePlatformDto } from "./dto/update-platform.dto";
 
 @Injectable()
 export class PlatformService {
   create(createPlatformDto: CreatePlatformDto) {
-    return 'This action adds a new platform';
+    return "This action adds a new platform";
   }
 
   findAll() {
