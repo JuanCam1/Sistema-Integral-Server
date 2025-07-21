@@ -1,3 +1,4 @@
+import { Sede } from "src/sede/entities/sede.entity";
 import { State } from "src/state/entities/state.entity";
 import { User } from "src/user/entities/user.entity";
 import {
@@ -30,9 +31,9 @@ export class Area {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  // @ManyToOne(() => Sede, (sede) => sede.areas)
-  // @JoinColumn({ name: 'sedeId' })
-  // sede: Sede;
+  @ManyToOne(() => Sede, (sede) => sede.areas)
+  @JoinColumn({ name: "sedeId" })
+  sede: Sede;
 
   @OneToMany(() => User, (user) => user.area)
   users: User[];
