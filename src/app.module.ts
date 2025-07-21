@@ -18,6 +18,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { StateModule } from "./state/state.module";
 import { UserTypeModule } from "./user-type/user-type.module";
 import { SwaggerModule } from "@nestjs/swagger";
+import { ConfigModule as ConfigAppModule } from "./config/config.module";
+import { DeveloperModule } from "./developer/developer.module";
+import { CompanyPlatformModule } from "./company-platform/company-platform.module";
+import { ImageModule } from "./image/image.module";
+import { ReportStateModule } from "./report-state/report-state.module";
+import { TaskModule } from "./task/task.module";
+import { ManualModule } from "./manual/manual.module";
+import { DocumentReportModule } from "./document-report/document-report.module";
 
 @Module({
   imports: [
@@ -54,6 +62,15 @@ import { SwaggerModule } from "@nestjs/swagger";
     ReportHistoryModule,
     UserTypeModule,
     SwaggerModule,
+    ConfigModule,
+    DeveloperModule,
+    CompanyPlatformModule,
+    ConfigAppModule,
+    ImageModule,
+    ReportStateModule,
+    TaskModule,
+    ManualModule,
+    DocumentReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

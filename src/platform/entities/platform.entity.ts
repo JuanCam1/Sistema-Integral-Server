@@ -1,10 +1,11 @@
-import { Company } from "src/company/entities/company.entity";
+import { CompanyPlatform } from "src/company-platform/entities/company-platform.entity";
 import { State } from "src/state/entities/state.entity";
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 
@@ -19,14 +20,10 @@ export class Platform {
   @Column({ nullable: true })
   website: string;
 
-  @ManyToOne(() => Company, (company) => company.platforms)
-  @JoinColumn({ name: "companyId" })
-  company: Company;
-
   @ManyToOne(() => State)
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  // @OneToMany(() => Report, (report) => report.platform)
-  // reports: Report[];
+  @OneToMany(() => CompanyPlatform, (cp) => cp.platform)
+  companyPlatforms: CompanyPlatform[];
 }

@@ -1,5 +1,6 @@
 import { Sede } from "src/sede/entities/sede.entity";
 import { State } from "src/state/entities/state.entity";
+import { Task } from "src/task/entities/task.entity";
 import { User } from "src/user/entities/user.entity";
 import {
   Column,
@@ -38,6 +39,6 @@ export class Area {
   @OneToMany(() => User, (user) => user.area)
   users: User[];
 
-  // @OneToMany(() => Report, (report) => report.area)
-  // reports: Report[];
+  @OneToMany(() => Task, (task) => task.area)
+  tasks: Task[];
 }

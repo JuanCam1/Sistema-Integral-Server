@@ -1,4 +1,4 @@
-import { Platform } from "src/platform/entities/platform.entity";
+import { CompanyPlatform } from "src/company-platform/entities/company-platform.entity";
 import { State } from "src/state/entities/state.entity";
 import {
   Column,
@@ -23,13 +23,13 @@ export class Company {
   @Column()
   phone: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   email: string;
 
   @ManyToOne(() => State)
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(() => Platform, (platform) => platform.company)
-  platforms: Platform[];
+  @OneToMany(() => CompanyPlatform, (cp) => cp.company)
+  companyPlatforms: CompanyPlatform[];
 }
