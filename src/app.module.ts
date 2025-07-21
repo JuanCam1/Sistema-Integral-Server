@@ -15,6 +15,9 @@ import { DocumentModule } from "./document/document.module";
 import { ReportDeliveryModule } from "./report-delivery/report-delivery.module";
 import { ReportHistoryModule } from "./report-history/report-history.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { StateModule } from "./state/state.module";
+import { UserTypeModule } from "./user-type/user-type.module";
+import { SwaggerModule } from "@nestjs/swagger";
 
 @Module({
   imports: [
@@ -37,6 +40,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
         synchronize: true,
       }),
     }),
+    StateModule,
     AreaModule,
     CompanyModule,
     PeriodicityModule,
@@ -48,6 +52,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
     DocumentModule,
     ReportDeliveryModule,
     ReportHistoryModule,
+    UserTypeModule,
+    SwaggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

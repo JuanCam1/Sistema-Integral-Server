@@ -1,52 +1,60 @@
-// @Entity()
-// export class User {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+import { Area } from "src/area/entities/area.entity";
+import { State } from "src/state/entities/state.entity";
+import { UserType } from "src/user-type/entities/user-type.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
-//   @Column()
-//   cedula: string;
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-//   @Column()
-//   names: string;
+  @Column({ unique: true })
+  cedula: string;
 
-//   @Column()
-//   lastnames: string;
+  @Column()
+  name: string;
 
-//   @Column()
-//   phone: string;
+  @Column()
+  lastname: string;
 
-//   @Column({ unique: true, nullable: true })
-//   email: string;
+  @Column()
+  phone: string;
 
-//   @Column()
-//   password: string;
+  @Column({ unique: true, nullable: true })
+  email: string;
 
-//   @Column()
-//   position: string;
+  @Column()
+  password: string;
 
-//   @Column({ default: 1 })
-//   state: number;
+  @Column()
+  position: string;
 
-//   @Column()
-//   photo: string;
+  @Column()
+  photo: string;
 
-//   @Column({ nullable: true })
-//   profile: string;
+  @ManyToOne(() => UserType, (userType) => userType.users)
+  @JoinColumn({ name: "userTypeId" })
+  userType: UserType;
 
-//   @ManyToOne(() => Area, (area) => area.users)
-//   @JoinColumn({ name: 'areaId' })
-//   area: Area;
+  @ManyToOne(() => Area, (area) => area.users)
+  area: Area;
 
-//   @ManyToOne(() => User)
-//   @JoinColumn({ name: 'supervisorId' })
-//   supervisor: User;
+  @ManyToOne(() => State)
+  @JoinColumn({ name: "stateId" })
+  state: State;
 
-//   @OneToMany(() => Report, (report) => report.owner)
-//   reports: Report[];
+  // @OneToMany(() => Report, (report) => report.owner)
+  // reports: Report[];
 
-//   @OneToMany(() => ReportDelivery, (delivery) => delivery.user)
-//   deliveries: ReportDelivery[];
+  // @OneToMany(() => ReportDelivery, (delivery) => delivery.user)
+  // deliveries: ReportDelivery[];
 
-//   @OneToMany(() => ReportHistory, (history) => history.user)
-//   histories: ReportHistory[];
-// }
+  // @OneToMany(() => ReportHistory, (history) => history.user)
+  // histories: ReportHistory[];
+}

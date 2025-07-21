@@ -1,4 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { State } from "src/state/entities/state.entity";
+import { User } from "src/user/entities/user.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity()
 export class Area {
@@ -17,15 +26,16 @@ export class Area {
   @Column()
   extension: string;
 
-  @Column({ default: 1 })
-  active: number;
+  @ManyToOne(() => State)
+  @JoinColumn({ name: "stateId" })
+  state: State;
 
   // @ManyToOne(() => Sede, (sede) => sede.areas)
   // @JoinColumn({ name: 'sedeId' })
   // sede: Sede;
 
-  // @OneToMany(() => User, (user) => user.area)
-  // users: User[];
+  @OneToMany(() => User, (user) => user.area)
+  users: User[];
 
   // @OneToMany(() => Report, (report) => report.area)
   // reports: Report[];
