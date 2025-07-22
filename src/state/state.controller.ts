@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { StateService } from "./state.service";
 import { ApiOperation } from "@nestjs/swagger";
 
@@ -9,6 +9,7 @@ export class StateController {
   @Get()
   @ApiOperation({ summary: "Get all states" })
   async findAll() {
-    return await this.stateService.findAll();
+    const data = await this.stateService.findAll();
+    return { data, message: "OK", state: "SUCCESS", codeError: HttpStatus.OK };
   }
 }

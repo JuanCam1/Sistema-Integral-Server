@@ -63,13 +63,11 @@ export class UserService {
   }
 
   private async findByUser(id: string) {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {
         id,
         isDeleted: false,
       },
     });
-
-    return user;
   }
 }

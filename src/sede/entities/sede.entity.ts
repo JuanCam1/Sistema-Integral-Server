@@ -11,23 +11,25 @@ import {
 
 @Entity()
 export class Sede {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
   address: string;
 
-  @Column({ nullable: true })
+  @Column()
   ubication: string;
+
+  @Column({ default: false })
+  isDeleted: boolean;
 
   @ManyToOne(() => State)
   @JoinColumn({ name: "stateId" })
   state: State;
 
   @OneToMany(() => Area, (area) => area.sede)
-  @JoinColumn({ name: "areaId" })
   areas: Area[];
 }
