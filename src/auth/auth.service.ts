@@ -1,26 +1,62 @@
-import { Injectable } from "@nestjs/common";
-import { CreateAuthDto } from "./dto/create-auth.dto";
-import { UpdateAuthDto } from "./dto/update-auth.dto";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import * as bcryptjs from "bcryptjs";
+
+import { UserService } from "src/user/user.service";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return "This action adds a new auth";
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register({ password, email, name }: RegisterDto) {
+    const user = await this.userService.findOneByEmail(email);
+
+    if (user) {
+      throw new BadRequestException("Email already exists");
+    }
+
+    const hashedPassword = await bcryptjs.hash(password, 10);
+
+    await this.userService.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    return {
+      message: "User created successfully",
+    };
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async login({ email, password }: LoginDto) {
+    const user = await this.userService.findOneByEmail(email);
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!user) {
+      throw new UnauthorizedException("Invalid email");
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const isPasswordValid = await bcryptjs.compare(password, user.password);
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid password");
+    }
+
+    const payload = { email: user.email };
+
+    const token = await this.jwtService.signAsync(payload);
+
+    return {
+      token,
+      email: user.email,
+    };
   }
 }
