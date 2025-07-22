@@ -45,6 +45,9 @@ export class User {
   @Column()
   updatedAt: Date;
 
+  @Column({ default: false })
+  isDeleted: boolean;
+
   @ManyToOne(() => UserType, (userType) => userType.users)
   @JoinColumn({ name: "userTypeId" })
   userType: UserType;

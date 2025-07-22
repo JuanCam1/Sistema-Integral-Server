@@ -2,6 +2,7 @@ import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { State } from "./entities/state.entity";
 import { Repository } from "typeorm";
+import { StateModel } from "types/state.model";
 
 @Injectable()
 export class StateService implements OnApplicationBootstrap {
@@ -11,7 +12,12 @@ export class StateService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    const defaultState = ["Activo", "Inactivo", "Pendiente", "Cancelado"];
+    const defaultState: StateModel[] = [
+      StateModel.ACTIVE,
+      StateModel.INACTIVE,
+      StateModel.PENDING,
+      StateModel.CANCELED,
+    ];
 
     for (const state of defaultState) {
       const exists = await this.stateRepository.findOne({

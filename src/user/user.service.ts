@@ -1,26 +1,71 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { User } from "./entities/user.entity";
+import { StateModel } from "types/state.model";
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return "This action adds a new user";
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    return await this.userRepository.save(createUserDto);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    return await this.userRepository.find({
+      where: {
+        state: {
+          name: StateModel.ACTIVE,
+        },
+        isDeleted: false,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const user = await this.findByUser(id);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findByUser(id);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return await this.userRepository.update(id, updateUserDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const user = await this.findByUser(id);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return await this.userRepository.update(id, {
+      isDeleted: true,
+    });
+  }
+
+  private async findByUser(id: string) {
+    const user = await this.userRepository.findOne({
+      where: {
+        id,
+        isDeleted: false,
+      },
+    });
+
+    return user;
   }
 }
