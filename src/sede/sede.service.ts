@@ -15,7 +15,6 @@ export class SedeService {
   ) {}
 
   async create(createSedeDto: CreateSedeDto) {
-    console.log(createSedeDto);
     const capitalizeName = capitalizeText(createSedeDto.name);
     const capitalizeAddress = capitalizeText(createSedeDto.address);
     const capitalizeUbication = capitalizeText(createSedeDto.ubication);
@@ -51,6 +50,19 @@ export class SedeService {
       throw new NotFoundException("Sede not found");
     }
 
+    const capitalizeName = updateSedeDto.name
+      ? capitalizeText(updateSedeDto.name)
+      : sede.name;
+    const capitalizeAddress = updateSedeDto.address
+      ? capitalizeText(updateSedeDto.address)
+      : sede.address;
+    const capitalizeUbication = updateSedeDto.ubication
+      ? capitalizeText(updateSedeDto.ubication)
+      : sede.ubication;
+
+    updateSedeDto.name = capitalizeName;
+    updateSedeDto.address = capitalizeAddress;
+    updateSedeDto.ubication = capitalizeUbication;
     return await this.sedeRepository.update(id, updateSedeDto);
   }
 

@@ -1,26 +1,101 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Company } from "./entities/company.entity";
+import { Repository } from "typeorm";
+import { capitalizeText } from "src/utils/capitalize-text";
+import { StateNumberModel } from "types/state.model";
 
 @Injectable()
 export class CompanyService {
-  create(createCompanyDto: CreateCompanyDto) {
-    return "This action adds a new company";
+  constructor(
+    @InjectRepository(Company)
+    private readonly companyRepository: Repository<Company>,
+  ) {}
+
+  async create(createCompanyDto: CreateCompanyDto) {
+    const capitalizeName = capitalizeText(createCompanyDto.name);
+    const capitalizeAddress = capitalizeText(createCompanyDto.address);
+
+    createCompanyDto.name = capitalizeName;
+    createCompanyDto.address = capitalizeAddress;
+    return await this.companyRepository.save(createCompanyDto);
   }
 
-  findAll() {
-    return `This action returns all company`;
+  async findAll() {
+    return await this.companyRepository.find({
+      where: {
+        isDeleted: false,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: string) {
+    const company = await this.findByCompany(id);
+
+    if (!company) {
+      throw new NotFoundException("Company not found");
+    }
+
+    return company;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(id: string, updateCompanyDto: UpdateCompanyDto) {
+    const company = await this.findByCompany(id);
+
+    if (!company) {
+      throw new NotFoundException("Company not found");
+    }
+
+    const capitalizeName = updateCompanyDto.name
+      ? capitalizeText(updateCompanyDto.name)
+      : company.name;
+    const capitalizeAddress = updateCompanyDto.address
+      ? capitalizeText(updateCompanyDto.address)
+      : company.address;
+
+    updateCompanyDto.name = capitalizeName;
+    updateCompanyDto.address = capitalizeAddress;
+
+    return await this.companyRepository.update(id, updateCompanyDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string) {
+    const company = await this.findByCompany(id);
+
+    if (!company) {
+      throw new NotFoundException("Company not found");
+    }
+
+    return await this.companyRepository.update(id, {
+      isDeleted: true,
+    });
+  }
+
+  async changeState(id: string) {
+    const company = await this.findByCompany(id);
+
+    if (!company) {
+      throw new NotFoundException("Company not found");
+    }
+
+    const currentState = company.stateId as StateNumberModel;
+
+    return await this.companyRepository.update(id, {
+      stateId:
+        currentState === StateNumberModel.ACTIVE
+          ? StateNumberModel.INACTIVE
+          : StateNumberModel.ACTIVE,
+    });
+  }
+
+  private async findByCompany(id: string) {
+    return await this.companyRepository.findOne({
+      where: {
+        id,
+        isDeleted: false,
+      },
+    });
   }
 }

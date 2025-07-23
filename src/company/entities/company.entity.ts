@@ -26,7 +26,13 @@ export class Company {
   @Column({ unique: true })
   email: string;
 
-  @ManyToOne(() => State)
+  @Column({ default: 1 })
+  stateId: number;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @ManyToOne(() => State, { eager: true })
   @JoinColumn({ name: "stateId" })
   state: State;
 

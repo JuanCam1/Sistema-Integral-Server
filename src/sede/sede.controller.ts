@@ -12,6 +12,7 @@ import { CreateSedeDto } from "./dto/create-sede.dto";
 import { UpdateSedeDto } from "./dto/update-sede.dto";
 import { StatusModel } from "types/status.model";
 import { ApiOperation } from "@nestjs/swagger";
+import { sendResponse } from "src/utils/send-response";
 
 @Controller("sede")
 export class SedeController {
@@ -21,33 +22,21 @@ export class SedeController {
   @ApiOperation({ summary: "Create a new sede" })
   async create(@Body() createSedeDto: CreateSedeDto) {
     const data = await this.sedeService.create(createSedeDto);
-    return {
-      data,
-      message: "Sede created",
-      state: StatusModel.SUCCESS,
-    };
+    return sendResponse(data, "Sede created", StatusModel.SUCCESS);
   }
 
   @Get()
   @ApiOperation({ summary: "Get all sedes" })
   async findAll() {
     const data = await this.sedeService.findAll();
-    return {
-      data,
-      message: "Sedes found",
-      state: StatusModel.SUCCESS,
-    };
+    return sendResponse(data, "Sedes found", StatusModel.SUCCESS);
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get a sede by id" })
   async findOne(@Param("id") id: string) {
     const data = await this.sedeService.findOne(id);
-    return {
-      data,
-      message: "Sede found",
-      state: StatusModel.SUCCESS,
-    };
+    return sendResponse(data, "Sede found", StatusModel.SUCCESS);
   }
 
   @Patch(":id")
@@ -55,11 +44,7 @@ export class SedeController {
   async update(@Param("id") id: string, @Body() updateSedeDto: UpdateSedeDto) {
     const result = await this.sedeService.update(id, updateSedeDto);
     if (result.affected && result.affected > 0) {
-      return {
-        data: null,
-        message: "Sede updated",
-        state: StatusModel.SUCCESS,
-      };
+      return sendResponse(null, "Sede updated", StatusModel.SUCCESS);
     }
   }
 
@@ -68,11 +53,7 @@ export class SedeController {
   async remove(@Param("id") id: string) {
     const result = await this.sedeService.remove(id);
     if (result.affected && result.affected > 0) {
-      return {
-        data: null,
-        message: "Sede deleted",
-        state: StatusModel.SUCCESS,
-      };
+      return sendResponse(null, "Sede deleted", StatusModel.SUCCESS);
     }
   }
 
@@ -81,11 +62,7 @@ export class SedeController {
   async changeState(@Param("id") id: string) {
     const result = await this.sedeService.changeState(id);
     if (result.affected && result.affected > 0) {
-      return {
-        data: null,
-        message: "Sede state changed",
-        state: StatusModel.SUCCESS,
-      };
+      return sendResponse(null, "Sede state changed", StatusModel.SUCCESS);
     }
   }
 }

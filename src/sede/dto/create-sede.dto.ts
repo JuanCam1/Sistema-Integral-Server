@@ -3,10 +3,10 @@ import { Transform } from "class-transformer";
 import { IsInt, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateSedeDto {
+  @Transform(({ value }: { value: string }) => value.trim())
   @IsString()
   @MinLength(2)
   @MaxLength(30)
-  @Transform(({ value }: { value: string }) => value.trim())
   @ApiProperty()
   name: string;
 
