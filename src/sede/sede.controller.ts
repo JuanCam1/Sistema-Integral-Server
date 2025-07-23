@@ -5,7 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  HttpStatus,
+  Delete,
 } from "@nestjs/common";
 import { SedeService } from "./sede.service";
 import { CreateSedeDto } from "./dto/create-sede.dto";
@@ -25,7 +25,6 @@ export class SedeController {
       data,
       message: "Sede created",
       state: StatusModel.SUCCESS,
-      codeError: HttpStatus.CREATED,
     };
   }
 
@@ -37,7 +36,6 @@ export class SedeController {
       data,
       message: "Sedes found",
       state: StatusModel.SUCCESS,
-      codeError: HttpStatus.OK,
     };
   }
 
@@ -49,31 +47,44 @@ export class SedeController {
       data,
       message: "Sede found",
       state: StatusModel.SUCCESS,
-      codeError: HttpStatus.OK,
     };
   }
 
   @Patch(":id")
   @ApiOperation({ summary: "Update a sede" })
   async update(@Param("id") id: string, @Body() updateSedeDto: UpdateSedeDto) {
-    const data = await this.sedeService.update(id, updateSedeDto);
-    return {
-      data,
-      message: "Sede updated",
-      state: StatusModel.SUCCESS,
-      codeError: HttpStatus.OK,
-    };
+    const result = await this.sedeService.update(id, updateSedeDto);
+    if (result.affected && result.affected > 0) {
+      return {
+        data: null,
+        message: "Sede updated",
+        state: StatusModel.SUCCESS,
+      };
+    }
   }
 
-  @Post(":id")
+  @Delete(":id")
   @ApiOperation({ summary: "Delete a sede" })
   async remove(@Param("id") id: string) {
     const result = await this.sedeService.remove(id);
     if (result.affected && result.affected > 0) {
       return {
+        data: null,
         message: "Sede deleted",
         state: StatusModel.SUCCESS,
-        codeError: HttpStatus.OK,
+      };
+    }
+  }
+
+  @Get("state/:id")
+  @ApiOperation({ summary: "Change a sede state" })
+  async changeState(@Param("id") id: string) {
+    const result = await this.sedeService.changeState(id);
+    if (result.affected && result.affected > 0) {
+      return {
+        data: null,
+        message: "Sede state changed",
+        state: StatusModel.SUCCESS,
       };
     }
   }

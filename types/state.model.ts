@@ -4,3 +4,10 @@ export enum StateModel {
   PENDING = "Pendiente",
   CANCELED = "Cancelado",
 }
+
+export enum StateNumberModel {
+  ACTIVE = 1,
+  INACTIVE = 2,
+  PENDING = 3,
+  CANCELED = 4,
+}

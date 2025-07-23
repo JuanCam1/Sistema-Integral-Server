@@ -26,7 +26,10 @@ export class Sede {
   @Column({ default: false })
   isDeleted: boolean;
 
-  @ManyToOne(() => State)
+  @Column()
+  stateId: number;
+
+  @ManyToOne(() => State, { eager: true })
   @JoinColumn({ name: "stateId" })
   state: State;
 

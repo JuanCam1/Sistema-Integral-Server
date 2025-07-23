@@ -1,5 +1,5 @@
-import capitalize from "capitalize";
+import { words } from "capitalize";
 
 export const capitalizeText = (text: string) => {
-  return capitalize(text.toLowerCase());
+  return words(text.toLowerCase());
 };
