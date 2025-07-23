@@ -12,15 +12,21 @@ import {
 @Entity()
 export class Platform {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({ unique: true })
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
   website: string;
 
-  @ManyToOne(() => State)
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @Column({ default: 1 })
+  stateId: number;
+
+  @ManyToOne(() => State, { eager: true })
   @JoinColumn({ name: "stateId" })
   state: State;
 
