@@ -22,7 +22,6 @@ import { ConfigModule as ConfigAppModule } from "./config/config.module";
 import { DeveloperModule } from "./developer/developer.module";
 import { CompanyPlatformModule } from "./company-platform/company-platform.module";
 import { ImageModule } from "./image/image.module";
-import { ReportStateModule } from "./report-state/report-state.module";
 import { TaskModule } from "./task/task.module";
 import { ManualModule } from "./manual/manual.module";
 import { DocumentReportModule } from "./document-report/document-report.module";
@@ -67,7 +66,6 @@ import { DocumentReportModule } from "./document-report/document-report.module";
     CompanyPlatformModule,
     ConfigAppModule,
     ImageModule,
-    ReportStateModule,
     TaskModule,
     ManualModule,
     DocumentReportModule,

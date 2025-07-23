@@ -1,4 +1,3 @@
-import { ReportState } from "src/report-state/entities/report-state.entity";
 import { Task } from "src/task/entities/task.entity";
 import { User } from "src/user/entities/user.entity";
 import {
@@ -52,8 +51,4 @@ export class ReportHistory {
   @ManyToOne(() => User, (user) => user.supervisedReportsHistories)
   @JoinColumn({ name: "supervisorId" })
   supervisor: User;
-
-  @ManyToOne(() => ReportState, (rs) => rs.reportHistories)
-  @JoinColumn({ name: "reportStateId" })
-  reportState: ReportState;
 }

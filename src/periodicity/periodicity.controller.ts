@@ -1,45 +1,61 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param } from "@nestjs/common";
 import { PeriodicityService } from "./periodicity.service";
 import { CreatePeriodicityDto } from "./dto/create-periodicity.dto";
 import { UpdatePeriodicityDto } from "./dto/update-periodicity.dto";
+import { ApiOperation } from "@nestjs/swagger";
+import { sendResponse } from "src/utils/send-response";
+import { StatusModel } from "types/status.model";
 
 @Controller("periodicity")
 export class PeriodicityController {
   constructor(private readonly periodicityService: PeriodicityService) {}
 
   @Post()
-  create(@Body() createPeriodicityDto: CreatePeriodicityDto) {
-    return this.periodicityService.create(createPeriodicityDto);
+  @ApiOperation({ summary: "Create a new periodicity" })
+  async create(@Body() createPeriodicityDto: CreatePeriodicityDto) {
+    const data = await this.periodicityService.create(createPeriodicityDto);
+    return sendResponse(data, "Periodicity created", StatusModel.SUCCESS);
   }
 
   @Get()
-  findAll() {
-    return this.periodicityService.findAll();
+  @ApiOperation({ summary: "Get all periodicities" })
+  async findAll() {
+    const data = await this.periodicityService.findAll();
+    return sendResponse(data, "Periodicities found", StatusModel.SUCCESS);
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.periodicityService.findOne(+id);
+  @ApiOperation({ summary: "Get a periodicity by id" })
+  async findOne(@Param("id") id: string) {
+    const data = await this.periodicityService.findOne(+id);
+    return sendResponse(data, "Periodicity found", StatusModel.SUCCESS);
   }
 
   @Patch(":id")
-  update(
+  @ApiOperation({ summary: "Update a periodicity" })
+  async update(
     @Param("id") id: string,
     @Body() updatePeriodicityDto: UpdatePeriodicityDto,
   ) {
-    return this.periodicityService.update(+id, updatePeriodicityDto);
+    const result = await this.periodicityService.update(
+      +id,
+      updatePeriodicityDto,
+    );
+    if (result.affected && result.affected > 0) {
+      return sendResponse(null, "Periodicity updated", StatusModel.SUCCESS);
+    }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.periodicityService.remove(+id);
+  @Get("state/:id")
+  @ApiOperation({ summary: "Change a periodicity state" })
+  async changeState(@Param("id") id: string) {
+    const result = await this.periodicityService.changeState(+id);
+    if (result.affected && result.affected > 0) {
+      return sendResponse(
+        null,
+        "Periodicity state changed",
+        StatusModel.SUCCESS,
+      );
+    }
   }
 }
