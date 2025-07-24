@@ -15,8 +15,11 @@ export class Developer {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
+
+  @Column()
+  companyId: string;
 
   @ManyToOne(() => Config, (config) => config.developers)
   config: Config;

@@ -26,6 +26,7 @@ export class PeriodicityService implements OnApplicationBootstrap {
       "Bimestral",
       "Trimestral",
       "Anual",
+      "Bienal",
     ];
 
     for (const periodicity of defaultPeriodicity) {

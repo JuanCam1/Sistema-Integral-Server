@@ -23,6 +23,9 @@ export class Task {
   @Column()
   date_from: Date;
 
+  @Column({ nullable: true })
+  date_to: Date;
+
   @Column()
   createdAt: Date;
 

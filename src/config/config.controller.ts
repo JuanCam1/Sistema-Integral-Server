@@ -1,34 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ConfigService } from './config.service';
-import { CreateConfigDto } from './dto/create-config.dto';
-import { UpdateConfigDto } from './dto/update-config.dto';
+import { Controller, Get, Body, Patch, Param } from "@nestjs/common";
+import { ConfigService } from "./config.service";
+import { UpdateConfigDto } from "./dto/update-config.dto";
+import { ApiOperation } from "@nestjs/swagger";
+import { StatusModel } from "types/status.model";
+import { sendResponse } from "src/utils/send-response";
 
-@Controller('config')
+@Controller("config")
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
-  @Post()
-  create(@Body() createConfigDto: CreateConfigDto) {
-    return this.configService.create(createConfigDto);
+  @Get(":id")
+  @ApiOperation({ summary: "Get a config by id" })
+  async findOne(@Param("id") id: string) {
+    const data = await this.configService.findOne(+id);
+    return sendResponse(data, "Config found", StatusModel.SUCCESS);
   }
 
-  @Get()
-  findAll() {
-    return this.configService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.configService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConfigDto: UpdateConfigDto) {
-    return this.configService.update(+id, updateConfigDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.configService.remove(+id);
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a config" })
+  async update(
+    @Param("id") id: string,
+    @Body() updateConfigDto: UpdateConfigDto,
+  ) {
+    const result = await this.configService.update(+id, updateConfigDto);
+    if (result.affected && result.affected > 0) {
+      return sendResponse(null, "Config updated", StatusModel.SUCCESS);
+    }
   }
 }
