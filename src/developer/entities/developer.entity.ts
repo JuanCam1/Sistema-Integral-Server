@@ -18,8 +18,8 @@ export class Developer {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  companyId: string;
+  @Column({ default: 1 })
+  configId: number;
 
   @ManyToOne(() => Config, (config) => config.developers)
   config: Config;

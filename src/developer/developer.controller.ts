@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { DeveloperService } from './developer.service';
-import { CreateDeveloperDto } from './dto/create-developer.dto';
-import { UpdateDeveloperDto } from './dto/update-developer.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { DeveloperService } from "./developer.service";
+import { CreateDeveloperDto } from "./dto/create-developer.dto";
+import { UpdateDeveloperDto } from "./dto/update-developer.dto";
+import { ApiOperation } from "@nestjs/swagger";
+import { StatusModel } from "types/status.model";
+import { sendResponse } from "src/utils/send-response";
 
-@Controller('developer')
+@Controller("developer")
 export class DeveloperController {
   constructor(private readonly developerService: DeveloperService) {}
 
   @Post()
-  create(@Body() createDeveloperDto: CreateDeveloperDto) {
-    return this.developerService.create(createDeveloperDto);
+  @ApiOperation({ summary: "Create a new developer" })
+  async create(@Body() createDeveloperDto: CreateDeveloperDto) {
+    const data = await this.developerService.create(createDeveloperDto);
+    return sendResponse(data, "Developer created", StatusModel.SUCCESS);
   }
 
   @Get()
-  findAll() {
-    return this.developerService.findAll();
+  @ApiOperation({ summary: "Get all developers" })
+  async findAll() {
+    const data = await this.developerService.findAll();
+    return sendResponse(data, "Developers found", StatusModel.SUCCESS);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.developerService.findOne(+id);
+  @Get(":id")
+  @ApiOperation({ summary: "Get a developer by id" })
+  async findOne(@Param("id") id: string) {
+    const data = await this.developerService.findOne(id);
+    return sendResponse(data, "Developer found", StatusModel.SUCCESS);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDeveloperDto: UpdateDeveloperDto) {
-    return this.developerService.update(+id, updateDeveloperDto);
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a developer" })
+  async update(
+    @Param("id") id: string,
+    @Body() updateDeveloperDto: UpdateDeveloperDto,
+  ) {
+    const result = await this.developerService.update(id, updateDeveloperDto);
+    if (result.affected && result.affected > 0) {
+      return sendResponse(null, "Developer updated", StatusModel.SUCCESS);
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.developerService.remove(+id);
+  @Delete(":id")
+  @ApiOperation({ summary: "Delete a developer" })
+  async remove(@Param("id") id: string) {
+    const result = await this.developerService.remove(id);
+    if (result.affected && result.affected > 0) {
+      return sendResponse(null, "Developer deleted", StatusModel.SUCCESS);
+    }
   }
 }

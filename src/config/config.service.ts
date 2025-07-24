@@ -34,9 +34,9 @@ export class ConfigService implements OnApplicationBootstrap {
     }
   }
 
-  async findOne(id: number) {
+  async findOne() {
     return await this.configRepository.findOne({
-      where: { id },
+      where: { id: 1 },
       relations: ["developers"],
     });
   }

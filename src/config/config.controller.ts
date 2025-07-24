@@ -9,10 +9,10 @@ import { sendResponse } from "src/utils/send-response";
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
-  @Get(":id")
+  @Get()
   @ApiOperation({ summary: "Get a config by id" })
-  async findOne(@Param("id") id: string) {
-    const data = await this.configService.findOne(+id);
+  async findOne() {
+    const data = await this.configService.findOne();
     return sendResponse(data, "Config found", StatusModel.SUCCESS);
   }
 
