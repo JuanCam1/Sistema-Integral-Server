@@ -9,6 +9,12 @@ export class Image {
   @Column()
   path: string;
 
+  @Column()
+  filename: string;
+
+  @Column()
+  mimetype: string;
+
   @OneToMany(() => User, (user) => user.userType)
   users: User[];
 }

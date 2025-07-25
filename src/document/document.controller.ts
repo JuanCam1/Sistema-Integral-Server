@@ -6,18 +6,34 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from "@nestjs/common";
 import { DocumentService } from "./document.service";
-import { CreateDocumentDto } from "./dto/create-document.dto";
 import { UpdateDocumentDto } from "./dto/update-document.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { PathConst } from "src/consts/paths-const";
 
 @Controller("document")
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 
   @Post()
-  create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentService.create(createDocumentDto);
+  @UseInterceptors(
+    FileInterceptor("file", {
+      limits: { files: 1 },
+      storage: diskStorage({
+        destination: PathConst.destinationDocuments,
+        filename: (req, file, callback) => {
+          const uniqueName = `${new Date().getTime()}-${file.originalname}`;
+          callback(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  create(@UploadedFile() file: Express.Multer.File) {
+    return this.documentService.create(file);
   }
 
   @Get()

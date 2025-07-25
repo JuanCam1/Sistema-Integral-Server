@@ -7,4 +7,10 @@ export class Document {
 
   @Column()
   file_url: string;
+
+  @Column()
+  original_name: string;
+
+  @Column()
+  mimetype: string;
 }

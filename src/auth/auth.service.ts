@@ -18,7 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto, file: Express.Multer.File) {
     const user = await this.userService.findOneByEmail(registerDto.email);
 
     if (user) {
@@ -29,19 +29,22 @@ export class AuthService {
     const nameCapitalized = capitalizeText(registerDto.name);
     const lastnameCapitalized = capitalizeText(registerDto.lastname);
 
-    await this.userService.create({
-      name: nameCapitalized,
-      email: registerDto.email,
-      password: hashedPassword,
-      profile: registerDto.profile,
-      userTypeId: registerDto.userTypeId,
-      areaId: registerDto.areaId,
-      imageId: registerDto.imageId,
-      stateId: registerDto.stateId,
-      cedula: registerDto.cedula,
-      lastname: lastnameCapitalized,
-      phone: registerDto.phone,
-    });
+    await this.userService.create(
+      {
+        name: nameCapitalized,
+        email: registerDto.email,
+        password: hashedPassword,
+        profile: registerDto.profile,
+        userTypeId: registerDto.userTypeId,
+        areaId: registerDto.areaId,
+        imageId: registerDto.imageId,
+        stateId: registerDto.stateId,
+        cedula: registerDto.cedula,
+        lastname: lastnameCapitalized,
+        phone: registerDto.phone,
+      },
+      file,
+    );
 
     return {
       message: "User created successfully",

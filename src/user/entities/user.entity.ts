@@ -48,19 +48,31 @@ export class User {
   @Column({ default: false })
   isDeleted: boolean;
 
-  @ManyToOne(() => UserType, (userType) => userType.users)
+  @Column()
+  userTypeId: string;
+
+  @Column()
+  areaId: string;
+
+  @Column({ nullable: true })
+  imageId: string;
+
+  @Column()
+  stateId: number;
+
+  @ManyToOne(() => UserType, (userType) => userType.users, { eager: true })
   @JoinColumn({ name: "userTypeId" })
   userType: UserType;
 
-  @ManyToOne(() => Area, (area) => area.users)
+  @ManyToOne(() => Area, (area) => area.users, { eager: true })
   @JoinColumn({ name: "areaId" })
   area: Area;
 
-  @ManyToOne(() => Image, (img) => img.users)
+  @ManyToOne(() => Image, (img) => img.users, { eager: true })
   @JoinColumn({ name: "imageId" })
   image: Image;
 
-  @ManyToOne(() => State)
+  @ManyToOne(() => State, { eager: true })
   @JoinColumn({ name: "stateId" })
   state: State;
 

@@ -5,16 +5,28 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./entities/user.entity";
 import { StateModel } from "types/state.model";
+import { Image } from "src/image/entities/image.entity";
+import { ImageService } from "src/image/image.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly imageService: ImageService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return await this.userRepository.save(createUserDto);
+  async create(createUserDto: CreateUserDto, file: Express.Multer.File) {
+    let saveImage: Image | undefined;
+
+    if (file) {
+      saveImage = await this.imageService.create(file);
+    }
+
+    return await this.userRepository.save({
+      ...createUserDto,
+      imageId: saveImage ? saveImage.id : undefined,
+    });
   }
 
   async findAll() {
