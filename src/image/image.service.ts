@@ -3,6 +3,9 @@ import { UpdateImageDto } from "./dto/update-image.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Image } from "./entities/image.entity";
 import { Repository } from "typeorm";
+import { PathConst } from "src/consts/paths-const";
+import { extname, join } from "node:path";
+import { writeFile } from "node:fs/promises";
 
 @Injectable()
 export class ImageService {
@@ -13,9 +16,14 @@ export class ImageService {
 
   async create(file: Express.Multer.File) {
     if (file) {
+      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`;
+      const savePath = join(PathConst.destinationImages, uniqueName);
+
+      await writeFile(savePath, file.buffer);
+
       const saveImage = await this.imageRepository.save({
         filename: file.originalname,
-        path: file.path,
+        path: savePath,
         mimetype: file.mimetype,
       });
 

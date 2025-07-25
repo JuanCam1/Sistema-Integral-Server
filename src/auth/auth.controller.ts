@@ -9,9 +9,7 @@ import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { diskStorage } from "multer";
-import { PathConst } from "src/consts/paths-const";
-import { extname } from "node:path";
+import { memoryStorage } from "multer";
 import { ApiBody, ApiConsumes, ApiOperation } from "@nestjs/swagger";
 
 @Controller("auth")
@@ -42,15 +40,16 @@ export class AuthController {
   @UseInterceptors(
     FileInterceptor("image", {
       limits: { files: 1 },
-      storage: diskStorage({
-        destination: PathConst.destinationImages,
-        filename: (req, file, cb) => {
-          const uniqueName = `${Date.now()}-${Math.round(
-            Math.random() * 1e9,
-          )}${extname(file.originalname)}`;
-          cb(null, uniqueName);
-        },
-      }),
+      storage: memoryStorage(),
+      // storage: diskStorage({
+      //   destination: PathConst.destinationImages,
+      //   filename: (req, file, cb) => {
+      //     const uniqueName = `${Date.now()}-${Math.round(
+      //       Math.random() * 1e9,
+      //     )}${extname(file.originalname)}`;
+      //     cb(null, uniqueName);
+      //   },
+      // }),
     }),
   )
   register(
