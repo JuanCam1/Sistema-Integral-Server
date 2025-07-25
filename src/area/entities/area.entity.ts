@@ -28,6 +28,15 @@ export class Area {
   @Column()
   extension: string;
 
+  @Column()
+  stateId: number;
+
+  @Column()
+  sedeId: string;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
   @ManyToOne(() => State)
   @JoinColumn({ name: "stateId" })
   state: State;

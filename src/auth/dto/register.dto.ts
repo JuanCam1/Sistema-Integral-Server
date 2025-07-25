@@ -1,4 +1,3 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import {
   IsEmail,
@@ -61,14 +60,7 @@ export class RegisterDto {
   @MaxLength(50)
   areaId: string;
 
-  @Transform(({ value }: { value: string }) => value.trim())
-  @IsString()
-  @MinLength(1)
-  @MaxLength(50)
-  imageId: string;
-
   @Transform(({ value }) => parseInt(value, 10))
   @IsInt()
-  @ApiProperty()
   stateId: number;
 }

@@ -7,6 +7,8 @@ import { User } from "./entities/user.entity";
 import { StateModel } from "types/state.model";
 import { Image } from "src/image/entities/image.entity";
 import { ImageService } from "src/image/image.service";
+import { capitalizeText } from "src/utils/capitalize-text";
+import { currentDate } from "src/utils/current-date-hour";
 
 @Injectable()
 export class UserService {
@@ -18,13 +20,23 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto, file: Express.Multer.File) {
     let saveImage: Image | undefined;
+    const currentNow = currentDate();
 
     if (file) {
       saveImage = await this.imageService.create(file);
     }
 
+    const capitalizeName = capitalizeText(createUserDto.name);
+    const capitalizeLastname = capitalizeText(createUserDto.lastname);
+    const capitalizeProfile = capitalizeText(createUserDto.profile);
+
     return await this.userRepository.save({
       ...createUserDto,
+      name: capitalizeName,
+      lastname: capitalizeLastname,
+      profile: capitalizeProfile,
+      createdAt: currentNow,
+      updatedAt: currentNow,
       imageId: saveImage ? saveImage.id : undefined,
     });
   }

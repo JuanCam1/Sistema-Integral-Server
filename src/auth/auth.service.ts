@@ -9,7 +9,6 @@ import * as bcryptjs from "bcryptjs";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { UserService } from "src/user/user.service";
-import { capitalizeText } from "src/utils/capitalize-text";
 
 @Injectable()
 export class AuthService {
@@ -26,21 +25,18 @@ export class AuthService {
     }
 
     const hashedPassword = await bcryptjs.hash(registerDto.password, 10);
-    const nameCapitalized = capitalizeText(registerDto.name);
-    const lastnameCapitalized = capitalizeText(registerDto.lastname);
 
     await this.userService.create(
       {
-        name: nameCapitalized,
+        name: registerDto.name,
         email: registerDto.email,
         password: hashedPassword,
         profile: registerDto.profile,
         userTypeId: registerDto.userTypeId,
         areaId: registerDto.areaId,
-        imageId: registerDto.imageId,
         stateId: registerDto.stateId,
         cedula: registerDto.cedula,
-        lastname: lastnameCapitalized,
+        lastname: registerDto.lastname,
         phone: registerDto.phone,
       },
       file,
