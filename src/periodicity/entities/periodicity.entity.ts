@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { State } from "src/state/entities/state.entity";
 import { Task } from "src/task/entities/task.entity";
 import {
@@ -17,6 +18,7 @@ export class Periodicity {
   @Column()
   name: string;
 
+  @Exclude()
   @Column({ default: 1 })
   stateId: number;
 
