@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Sede } from "src/sede/entities/sede.entity";
 import { State } from "src/state/entities/state.entity";
 import { Task } from "src/task/entities/task.entity";
@@ -28,20 +29,22 @@ export class Area {
   @Column()
   extension: string;
 
+  @Exclude()
   @Column()
   stateId: number;
 
+  @Exclude()
   @Column()
   sedeId: string;
 
   @Column({ default: false })
   isDeleted: boolean;
 
-  @ManyToOne(() => State)
+  @ManyToOne(() => State, { eager: true })
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @ManyToOne(() => Sede, (sede) => sede.areas)
+  @ManyToOne(() => Sede, (sede) => sede.areas, { eager: true })
   @JoinColumn({ name: "sedeId" })
   sede: Sede;
 

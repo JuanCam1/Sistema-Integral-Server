@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Area } from "src/area/entities/area.entity";
 import { State } from "src/state/entities/state.entity";
 import {
@@ -26,6 +27,7 @@ export class Sede {
   @Column({ default: false })
   isDeleted: boolean;
 
+  @Exclude()
   @Column({ default: 1 })
   stateId: number;
 
