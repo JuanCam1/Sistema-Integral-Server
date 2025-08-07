@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   OnApplicationBootstrap,
@@ -54,7 +55,13 @@ export class ConfigService implements OnApplicationBootstrap {
 
     updateConfigDto.company = capitalizeName;
 
-    return await this.configRepository.update(id, updateConfigDto);
+    const result = await this.configRepository.update(id, updateConfigDto);
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Configuration could not be updated");
   }
 
   private async findByConfig(id: number) {

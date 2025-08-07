@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCompanyPlatformDto } from './dto/create-company-platform.dto';
-import { UpdateCompanyPlatformDto } from './dto/update-company-platform.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateCompanyPlatformDto } from "./dto/create-company-platform.dto";
+import { UpdateCompanyPlatformDto } from "./dto/update-company-platform.dto";
 
 @Injectable()
 export class CompanyPlatformService {
   create(createCompanyPlatformDto: CreateCompanyPlatformDto) {
-    return 'This action adds a new companyPlatform';
+    return "This action adds a new companyPlatform";
   }
 
   findAll() {
