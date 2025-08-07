@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateDeveloperDto } from "./dto/create-developer.dto";
 import { UpdateDeveloperDto } from "./dto/update-developer.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -27,42 +31,57 @@ export class DeveloperService {
   }
 
   async findOne(id: string) {
-    const sede = await this.findByDev(id);
+    const developer = await this.findByDev(id);
 
-    if (!sede) {
+    if (!developer) {
       throw new NotFoundException("Developer not found");
     }
 
-    return sede;
+    return developer;
   }
 
   async update(id: string, updateDeveloperDto: UpdateDeveloperDto) {
-    const sede = await this.findByDev(id);
+    const developer = await this.findByDev(id);
 
-    if (!sede) {
+    if (!developer) {
       throw new NotFoundException("Developer not found");
     }
 
     const capitalizeName = updateDeveloperDto.name
       ? capitalizeText(updateDeveloperDto.name)
-      : sede.name;
+      : developer.name;
     const capitalizeLastname = updateDeveloperDto.lastname
       ? capitalizeText(updateDeveloperDto.lastname)
-      : sede.lastname;
+      : developer.lastname;
 
     updateDeveloperDto.name = capitalizeName;
     updateDeveloperDto.lastname = capitalizeLastname;
-    return await this.developerRepository.update(id, updateDeveloperDto);
+    const result = await this.developerRepository.update(
+      id,
+      updateDeveloperDto,
+    );
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Developer could not be updated");
   }
 
   async remove(id: string) {
-    const sede = await this.findByDev(id);
+    const developer = await this.findByDev(id);
 
-    if (!sede) {
+    if (!developer) {
       throw new NotFoundException("Developer not found");
     }
 
-    return await this.developerRepository.delete(id);
+    const result = await this.developerRepository.delete(id);
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Developer could not be deleted");
   }
 
   private async findByDev(id: string) {
