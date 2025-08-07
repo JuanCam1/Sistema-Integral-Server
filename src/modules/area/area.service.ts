@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateAreaDto } from "./dto/create-area.dto";
 import { UpdateAreaDto } from "./dto/update-area.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -14,7 +18,7 @@ export class AreaService {
   ) {}
 
   create(createAreaDto: CreateAreaDto) {
-    return "This action adds a new area";
+    return "This action adds a new area " + JSON.stringify(createAreaDto);
   }
 
   async findAll() {
@@ -25,15 +29,23 @@ export class AreaService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} area`;
+  async findOne(id: string) {
+    const area = await this.findByArea(id);
+    if (!area) {
+      throw new NotFoundException("Area not found");
+    }
+
+    return area;
   }
 
-  update(id: number, updateAreaDto: UpdateAreaDto) {
-    return `This action updates a #${id} area`;
+  update(id: string, updateAreaDto: UpdateAreaDto) {
+    console.log(
+      `This action updates a #${id} area  ${JSON.stringify(updateAreaDto)}`,
+    );
+    return true;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} area`;
   }
 
@@ -46,12 +58,18 @@ export class AreaService {
 
     const currentState = area.stateId as StateNumberModel;
 
-    return await this.areaRepository.update(id, {
+    const result = await this.areaRepository.update(id, {
       stateId:
         currentState === StateNumberModel.ACTIVE
           ? StateNumberModel.INACTIVE
           : StateNumberModel.ACTIVE,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("User could not be changed state");
   }
 
   private async findByArea(id: string) {

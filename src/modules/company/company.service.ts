@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -59,7 +63,12 @@ export class CompanyService {
     updateCompanyDto.name = capitalizeName;
     updateCompanyDto.address = capitalizeAddress;
 
-    return await this.companyRepository.update(id, updateCompanyDto);
+    const result = await this.companyRepository.update(id, updateCompanyDto);
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Company could not be updated");
   }
 
   async remove(id: string) {
@@ -69,9 +78,15 @@ export class CompanyService {
       throw new NotFoundException("Company not found");
     }
 
-    return await this.companyRepository.update(id, {
+    const result = await this.companyRepository.update(id, {
       isDeleted: true,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Company could not be deleted");
   }
 
   async changeState(id: string) {
@@ -83,12 +98,18 @@ export class CompanyService {
 
     const currentState = company.stateId as StateNumberModel;
 
-    return await this.companyRepository.update(id, {
+    const result = await this.companyRepository.update(id, {
       stateId:
         currentState === StateNumberModel.ACTIVE
           ? StateNumberModel.INACTIVE
           : StateNumberModel.ACTIVE,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Company could not be changed state");
   }
 
   private async findByCompany(id: string) {

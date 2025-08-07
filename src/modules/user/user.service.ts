@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Not, Repository } from "typeorm";
 import { User } from "./entities/user.entity";
-import { StateModel } from "types/state.model";
+import { StateModel, StateNumberModel } from "types/state.model";
 import { Image } from "src/modules/image/entities/image.entity";
 import { ImageService } from "src/modules/image/image.service";
 import { capitalizeText } from "src/utils/capitalize-text";
@@ -41,7 +45,7 @@ export class UserService {
     });
   }
 
-  async findAll(id: string) {
+  async findAllExceptId(id: string) {
     return await this.userRepository.find({
       where: {
         id: Not(id),
@@ -59,6 +63,8 @@ export class UserService {
     if (!user) {
       throw new NotFoundException("User not found");
     }
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -68,7 +74,12 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    return await this.userRepository.update(id, updateUserDto);
+    const result = await this.userRepository.update(id, updateUserDto);
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("User could not be updated");
   }
 
   async remove(id: string) {
@@ -78,9 +89,38 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    return await this.userRepository.update(id, {
+    const result = await this.userRepository.update(id, {
       isDeleted: true,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("User could not be deleted");
+  }
+
+  async changeState(id: string) {
+    const user = await this.findByUser(id);
+
+    if (!user) {
+      throw new NotFoundException("Sede not found");
+    }
+
+    const currentState = user.stateId as StateNumberModel;
+
+    const result = await this.userRepository.update(id, {
+      stateId:
+        currentState === StateNumberModel.ACTIVE
+          ? StateNumberModel.INACTIVE
+          : StateNumberModel.ACTIVE,
+    });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("User could not be changed state");
   }
 
   async findOneByEmail(email: string) {

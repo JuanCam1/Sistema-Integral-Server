@@ -4,6 +4,7 @@ import {
   Body,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
@@ -11,6 +12,11 @@ import { LoginDto } from "./dto/login.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { memoryStorage } from "multer";
 import { ApiBody, ApiConsumes, ApiOperation } from "@nestjs/swagger";
+import { sendResponse } from "src/utils/send-response";
+import { StatusModel } from "types/status.model";
+import { HttpCode } from "src/utils/http-code";
+import { Response } from "express";
+import { validateError } from "src/utils/validate-error";
 
 @Controller("auth")
 export class AuthController {
@@ -52,15 +58,38 @@ export class AuthController {
       // }),
     }),
   )
-  register(
+  async register(
     @UploadedFile() file: Express.Multer.File,
     @Body() registerDto: RegisterDto,
+    @Res() res: Response,
   ) {
-    return this.authService.register(registerDto, file);
+    try {
+      const data = await this.authService.register(registerDto, file);
+      return sendResponse(
+        data,
+        "User created",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.CREATED,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
   }
 
   @Post("login")
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    try {
+      const data = await this.authService.login(loginDto);
+      return sendResponse(
+        data,
+        "User created",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.CREATED,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
   }
 }

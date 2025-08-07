@@ -1,22 +1,17 @@
+import { Response } from "express";
 import type { StatusModel } from "types/status.model";
-
-export interface StandardResponse<T> {
-  data: T;
-  message: string;
-  state: StatusModel;
-  codeError?: string;
-}
 
 export const sendResponse = <T>(
   data: T,
   message: string,
   state: StatusModel,
-  codeError?: string,
-): StandardResponse<T> => {
-  return {
+  res: Response,
+  codeError: number,
+) => {
+  return res.status(codeError).json({
     data,
     message,
     state,
-    ...(codeError && { codeError }),
-  };
+    codeError,
+  });
 };

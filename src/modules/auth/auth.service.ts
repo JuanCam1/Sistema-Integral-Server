@@ -26,7 +26,7 @@ export class AuthService {
 
     const hashedPassword = await bcryptjs.hash(registerDto.password, 10);
 
-    await this.userService.create(
+    const userNew = await this.userService.create(
       {
         name: registerDto.name,
         email: registerDto.email,
@@ -42,9 +42,10 @@ export class AuthService {
       file,
     );
 
-    return {
-      message: "User created successfully",
-    };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...userNewNoPassword } = userNew;
+
+    return userNewNoPassword;
   }
 
   async login({ email, password }: LoginDto) {

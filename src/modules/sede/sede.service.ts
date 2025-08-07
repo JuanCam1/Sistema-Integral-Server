@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateSedeDto } from "./dto/create-sede.dto";
 import { UpdateSedeDto } from "./dto/update-sede.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -63,7 +67,13 @@ export class SedeService {
     updateSedeDto.name = capitalizeName;
     updateSedeDto.address = capitalizeAddress;
     updateSedeDto.ubication = capitalizeUbication;
-    return await this.sedeRepository.update(id, updateSedeDto);
+    const result = await this.sedeRepository.update(id, updateSedeDto);
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Sede could not be updated");
   }
 
   async remove(id: string) {
@@ -73,9 +83,15 @@ export class SedeService {
       throw new NotFoundException("Sede not found");
     }
 
-    return await this.sedeRepository.update(id, {
+    const result = await this.sedeRepository.update(id, {
       isDeleted: true,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Sede could not be deleted");
   }
 
   async changeState(id: string) {
@@ -87,12 +103,18 @@ export class SedeService {
 
     const currentState = sede.stateId as StateNumberModel;
 
-    return await this.sedeRepository.update(id, {
+    const result = await this.sedeRepository.update(id, {
       stateId:
         currentState === StateNumberModel.ACTIVE
           ? StateNumberModel.INACTIVE
           : StateNumberModel.ACTIVE,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Sede could not be updated");
   }
 
   private async findBySede(id: string) {
