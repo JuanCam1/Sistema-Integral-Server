@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Res } from "@nestjs/common";
 import { PeriodicityService } from "./periodicity.service";
 import { CreatePeriodicityDto } from "./dto/create-periodicity.dto";
 import { UpdatePeriodicityDto } from "./dto/update-periodicity.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { sendResponse } from "src/utils/send-response";
 import { StatusModel } from "types/status.model";
+import { HttpCode } from "src/utils/http-code";
+import { validateError } from "src/utils/validate-error";
+import { Response } from "express";
 
 @Controller("periodicity")
 export class PeriodicityController {
@@ -12,23 +15,56 @@ export class PeriodicityController {
 
   @Post()
   @ApiOperation({ summary: "Create a new periodicity" })
-  async create(@Body() createPeriodicityDto: CreatePeriodicityDto) {
-    const data = await this.periodicityService.create(createPeriodicityDto);
-    return sendResponse(data, "Periodicity created", StatusModel.SUCCESS);
+  async create(
+    @Body() createPeriodicityDto: CreatePeriodicityDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const data = await this.periodicityService.create(createPeriodicityDto);
+      return sendResponse(
+        data,
+        "Periodicity created",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.CREATED,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
   }
 
   @Get()
   @ApiOperation({ summary: "Get all periodicities" })
-  async findAll() {
-    const data = await this.periodicityService.findAll();
-    return sendResponse(data, "Periodicities found", StatusModel.SUCCESS);
+  async findAll(@Res() res: Response) {
+    try {
+      const data = await this.periodicityService.findAll();
+      return sendResponse(
+        data,
+        "Periodicity found",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.OK,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
   }
 
   @Get(":id")
   @ApiOperation({ summary: "Get a periodicity by id" })
-  async findOne(@Param("id") id: string) {
-    const data = await this.periodicityService.findOne(+id);
-    return sendResponse(data, "Periodicity found", StatusModel.SUCCESS);
+  async findOne(@Param("id") id: string, @Res() res: Response) {
+    try {
+      const data = await this.periodicityService.findOne(+id);
+      return sendResponse(
+        data,
+        "Periodicity found",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.OK,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
   }
 
   @Patch(":id")
@@ -36,26 +72,43 @@ export class PeriodicityController {
   async update(
     @Param("id") id: string,
     @Body() updatePeriodicityDto: UpdatePeriodicityDto,
+    @Res() res: Response,
   ) {
-    const result = await this.periodicityService.update(
-      +id,
-      updatePeriodicityDto,
-    );
-    if (result.affected && result.affected > 0) {
-      return sendResponse(null, "Periodicity updated", StatusModel.SUCCESS);
+    try {
+      const result = await this.periodicityService.update(
+        +id,
+        updatePeriodicityDto,
+      );
+      if (result) {
+        return sendResponse(
+          null,
+          "Periodicity updated",
+          StatusModel.SUCCESS,
+          res,
+          HttpCode.NO_CONTENT,
+        );
+      }
+    } catch (error) {
+      return validateError(error, res);
     }
   }
 
   @Get("state/:id")
   @ApiOperation({ summary: "Change a periodicity state" })
-  async changeState(@Param("id") id: string) {
-    const result = await this.periodicityService.changeState(+id);
-    if (result.affected && result.affected > 0) {
-      return sendResponse(
-        null,
-        "Periodicity state changed",
-        StatusModel.SUCCESS,
-      );
+  async changeState(@Param("id") id: string, @Res() res: Response) {
+    try {
+      const result = await this.periodicityService.changeState(+id);
+      if (result) {
+        return sendResponse(
+          null,
+          "Periodicity state changed",
+          StatusModel.SUCCESS,
+          res,
+          HttpCode.NO_CONTENT,
+        );
+      }
+    } catch (error) {
+      return validateError(error, res);
     }
   }
 }

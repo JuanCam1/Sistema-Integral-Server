@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   OnApplicationBootstrap,
@@ -77,7 +78,16 @@ export class PeriodicityService implements OnApplicationBootstrap {
 
     updatePeriodicityDto.name = capitalizeName;
 
-    return await this.periodicityRepository.update(id, updatePeriodicityDto);
+    const result = await this.periodicityRepository.update(
+      id,
+      updatePeriodicityDto,
+    );
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Periodicity could not be updated");
   }
 
   async changeState(id: number) {
@@ -89,12 +99,18 @@ export class PeriodicityService implements OnApplicationBootstrap {
 
     const currentState = periodicity.stateId as StateNumberModel;
 
-    return await this.periodicityRepository.update(id, {
+    const result = await this.periodicityRepository.update(id, {
       stateId:
         currentState === StateNumberModel.ACTIVE
           ? StateNumberModel.INACTIVE
           : StateNumberModel.ACTIVE,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Periodicity could not be updated");
   }
 
   private async findByPeriodicity(id: number) {
