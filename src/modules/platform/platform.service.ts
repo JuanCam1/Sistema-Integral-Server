@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreatePlatformDto } from "./dto/create-platform.dto";
 import { UpdatePlatformDto } from "./dto/update-platform.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -52,7 +56,13 @@ export class PlatformService {
 
     updatePlatformDto.name = capitalizeName;
 
-    return await this.platformRepository.update(id, updatePlatformDto);
+    const result = await this.platformRepository.update(id, updatePlatformDto);
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Platform could not be updated");
   }
 
   async remove(id: string) {
@@ -62,9 +72,15 @@ export class PlatformService {
       throw new NotFoundException("Platform not found");
     }
 
-    return await this.platformRepository.update(id, {
+    const result = await this.platformRepository.update(id, {
       isDeleted: true,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Platform could not be deleted");
   }
 
   async changeState(id: string) {
@@ -76,12 +92,18 @@ export class PlatformService {
 
     const currentState = platform.stateId as StateNumberModel;
 
-    return await this.platformRepository.update(id, {
+    const result = await this.platformRepository.update(id, {
       stateId:
         currentState === StateNumberModel.ACTIVE
           ? StateNumberModel.INACTIVE
           : StateNumberModel.ACTIVE,
     });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    throw new BadRequestException("Platform could not be updated");
   }
 
   private async findByPlatform(id: string) {
