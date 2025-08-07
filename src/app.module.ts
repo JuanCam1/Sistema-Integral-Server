@@ -1,8 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { SwaggerModule } from "@nestjs/swagger";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "node:path";
 
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { AreaModule } from "./area/area.module";
 import { CompanyModule } from "./company/company.module";
 import { PeriodicityModule } from "./periodicity/periodicity.module";
@@ -14,10 +16,8 @@ import { ReportModule } from "./report/report.module";
 import { DocumentModule } from "./document/document.module";
 import { ReportDeliveryModule } from "./report-delivery/report-delivery.module";
 import { ReportHistoryModule } from "./report-history/report-history.module";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { StateModule } from "./state/state.module";
 import { UserTypeModule } from "./user-type/user-type.module";
-import { SwaggerModule } from "@nestjs/swagger";
 import { ConfigModule as ConfigAppModule } from "./config/config.module";
 import { DeveloperModule } from "./developer/developer.module";
 import { CompanyPlatformModule } from "./company-platform/company-platform.module";
@@ -25,12 +25,21 @@ import { ImageModule } from "./image/image.module";
 import { TaskModule } from "./task/task.module";
 import { ManualModule } from "./manual/manual.module";
 import { DocumentReportModule } from "./document-report/document-report.module";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env.local",
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "..", "uploads", "images"),
+      serveRoot: "/images",
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Area } from "src/area/entities/area.entity";
 import { Image } from "src/image/entities/image.entity";
 import { ReportHistory } from "src/report-history/entities/report-history.entity";
@@ -33,6 +34,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
 
@@ -45,18 +47,23 @@ export class User {
   @Column()
   updatedAt: Date;
 
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
+  @Exclude()
   @Column()
   userTypeId: string;
 
-  @Column()
+  @Exclude()
+  @Column({ nullable: true })
   areaId: string;
 
+  @Exclude()
   @Column({ nullable: true })
   imageId: string;
 
+  @Exclude()
   @Column()
   stateId: number;
 
@@ -64,9 +71,9 @@ export class User {
   @JoinColumn({ name: "userTypeId" })
   userType: UserType;
 
-  @ManyToOne(() => Area, (area) => area.users, { eager: true })
+  @ManyToOne(() => Area, (area) => area.users, { eager: true, nullable: true })
   @JoinColumn({ name: "areaId" })
-  area: Area;
+  area: Area | null;
 
   @ManyToOne(() => Image, (img) => img.users, { eager: true })
   @JoinColumn({ name: "imageId" })

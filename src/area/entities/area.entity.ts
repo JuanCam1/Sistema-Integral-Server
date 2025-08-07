@@ -37,6 +37,7 @@ export class Area {
   @Column()
   sedeId: string;
 
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

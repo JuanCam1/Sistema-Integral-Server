@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { User } from "./entities/user.entity";
 import { StateModel } from "types/state.model";
 import { Image } from "src/image/entities/image.entity";
@@ -41,9 +41,10 @@ export class UserService {
     });
   }
 
-  async findAll() {
+  async findAll(id: string) {
     return await this.userRepository.find({
       where: {
+        id: Not(id),
         state: {
           name: StateModel.ACTIVE,
         },

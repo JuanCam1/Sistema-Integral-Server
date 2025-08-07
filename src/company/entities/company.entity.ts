@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { CompanyPlatform } from "src/company-platform/entities/company-platform.entity";
 import { State } from "src/state/entities/state.entity";
 import {
@@ -26,6 +27,7 @@ export class Company {
   @Column({ unique: true })
   email: string;
 
+  @Exclude()
   @Column({ default: 1 })
   stateId: number;
 

@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+
 import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Company } from "./entities/company.entity";
-import { Repository } from "typeorm";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { StateNumberModel } from "types/state.model";
 
