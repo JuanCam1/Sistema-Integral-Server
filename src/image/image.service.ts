@@ -23,7 +23,7 @@ export class ImageService {
 
       const saveImage = await this.imageRepository.save({
         filename: file.originalname,
-        path: savePath,
+        path: uniqueName,
         mimetype: file.mimetype,
       });
 
