@@ -9,6 +9,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Area } from "./entities/area.entity";
 import { Repository } from "typeorm";
 import { StateNumberModel } from "types/state.model";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class AreaService {
@@ -22,11 +23,13 @@ export class AreaService {
   }
 
   async findAll() {
-    return await this.areaRepository.find({
+    const data = await this.areaRepository.find({
       where: {
         isDeleted: false,
       },
     });
+
+    return instanceToPlain(data);
   }
 
   async findOne(id: string) {
@@ -35,7 +38,7 @@ export class AreaService {
       throw new NotFoundException("Area not found");
     }
 
-    return area;
+    return instanceToPlain(area);
   }
 
   update(id: string, updateAreaDto: UpdateAreaDto) {

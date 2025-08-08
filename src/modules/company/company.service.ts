@@ -11,6 +11,7 @@ import { UpdateCompanyDto } from "./dto/update-company.dto";
 import { Company } from "./entities/company.entity";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { StateNumberModel } from "types/state.model";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class CompanyService {
@@ -25,15 +26,18 @@ export class CompanyService {
 
     createCompanyDto.name = capitalizeName;
     createCompanyDto.address = capitalizeAddress;
-    return await this.companyRepository.save(createCompanyDto);
+    const data = await this.companyRepository.save(createCompanyDto);
+    return instanceToPlain(data);
   }
 
   async findAll() {
-    return await this.companyRepository.find({
+    const data = await this.companyRepository.find({
       where: {
         isDeleted: false,
       },
     });
+
+    return instanceToPlain(data);
   }
 
   async findOne(id: string) {
@@ -43,7 +47,7 @@ export class CompanyService {
       throw new NotFoundException("Company not found");
     }
 
-    return company;
+    return instanceToPlain(company);
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto) {

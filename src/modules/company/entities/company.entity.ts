@@ -31,6 +31,7 @@ export class Company {
   @Column({ default: 1 })
   stateId: number;
 
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

@@ -24,6 +24,7 @@ export class Sede {
   @Column()
   ubication: string;
 
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 

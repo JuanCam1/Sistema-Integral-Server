@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { CompanyPlatform } from "src/modules/company-platform/entities/company-platform.entity";
 import { State } from "src/modules/state/entities/state.entity";
 import {
@@ -20,9 +21,11 @@ export class Platform {
   @Column()
   website: string;
 
+  @Exclude()
   @Column({ default: false })
   isDeleted: boolean;
 
+  @Exclude()
   @Column({ default: 1 })
   stateId: number;
 

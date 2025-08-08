@@ -11,6 +11,7 @@ import { Periodicity } from "./entities/periodicity.entity";
 import { Repository } from "typeorm";
 import { StateNumberModel } from "types/state.model";
 import { capitalizeText } from "src/utils/capitalize-text";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class PeriodicityService implements OnApplicationBootstrap {
@@ -48,11 +49,14 @@ export class PeriodicityService implements OnApplicationBootstrap {
     const capitalizeName = capitalizeText(createPeriodicityDto.name);
 
     createPeriodicityDto.name = capitalizeName;
-    return await this.periodicityRepository.save(createPeriodicityDto);
+    const data = await this.periodicityRepository.save(createPeriodicityDto);
+
+    return instanceToPlain(data);
   }
 
   async findAll() {
-    return await this.periodicityRepository.find();
+    const data = await this.periodicityRepository.find();
+    return instanceToPlain(data);
   }
 
   async findOne(id: number) {
@@ -62,7 +66,7 @@ export class PeriodicityService implements OnApplicationBootstrap {
       throw new NotFoundException("Periodicity not found");
     }
 
-    return periodicity;
+    return instanceToPlain(periodicity);
   }
 
   async update(id: number, updatePeriodicityDto: UpdatePeriodicityDto) {

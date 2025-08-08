@@ -13,6 +13,7 @@ import { Image } from "src/modules/image/entities/image.entity";
 import { ImageService } from "src/modules/image/image.service";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { currentDate } from "src/utils/current-date-hour";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class UserService {
@@ -34,7 +35,7 @@ export class UserService {
     const capitalizeLastname = capitalizeText(createUserDto.lastname);
     const capitalizeProfile = capitalizeText(createUserDto.profile);
 
-    return await this.userRepository.save({
+    const data = await this.userRepository.save({
       ...createUserDto,
       name: capitalizeName,
       lastname: capitalizeLastname,
@@ -43,10 +44,12 @@ export class UserService {
       updatedAt: currentNow,
       imageId: saveImage ? saveImage.id : undefined,
     });
+
+    return instanceToPlain(data);
   }
 
   async findAllExceptId(id: string) {
-    return await this.userRepository.find({
+    const data = await this.userRepository.find({
       where: {
         id: Not(id),
         state: {
@@ -55,6 +58,7 @@ export class UserService {
         isDeleted: false,
       },
     });
+    return instanceToPlain(data);
   }
 
   async findOne(id: string) {
@@ -64,7 +68,7 @@ export class UserService {
       throw new NotFoundException("User not found");
     }
 
-    return user;
+    return instanceToPlain(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

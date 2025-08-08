@@ -51,6 +51,9 @@ export class User {
   @Column({ default: false })
   isDeleted: boolean;
 
+  @Column({ nullable: true, default: null })
+  resetPasswordToken: string;
+
   @Exclude()
   @Column()
   userTypeId: string;

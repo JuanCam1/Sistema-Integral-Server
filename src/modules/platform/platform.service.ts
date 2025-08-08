@@ -10,6 +10,7 @@ import { Platform } from "./entities/platform.entity";
 import { Repository } from "typeorm";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { StateNumberModel } from "types/state.model";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class PlatformService {
@@ -22,15 +23,19 @@ export class PlatformService {
     const capitalizeName = capitalizeText(createPlatformDto.name);
 
     createPlatformDto.name = capitalizeName;
-    return await this.platformRepository.save(createPlatformDto);
+    const data = await this.platformRepository.save(createPlatformDto);
+
+    return instanceToPlain(data);
   }
 
   async findAll() {
-    return await this.platformRepository.find({
+    const data = await this.platformRepository.find({
       where: {
         isDeleted: false,
       },
     });
+
+    return instanceToPlain(data);
   }
 
   async findOne(id: string) {
@@ -40,7 +45,7 @@ export class PlatformService {
       throw new NotFoundException("Platform not found");
     }
 
-    return platform;
+    return instanceToPlain(platform);
   }
 
   async update(id: string, updatePlatformDto: UpdatePlatformDto) {

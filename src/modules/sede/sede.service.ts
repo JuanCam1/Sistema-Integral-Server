@@ -10,6 +10,7 @@ import { Sede } from "./entities/sede.entity";
 import { Repository } from "typeorm";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { StateNumberModel } from "types/state.model";
+import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class SedeService {
@@ -26,15 +27,19 @@ export class SedeService {
     createSedeDto.name = capitalizeName;
     createSedeDto.address = capitalizeAddress;
     createSedeDto.ubication = capitalizeUbication;
-    return await this.sedeRepository.save(createSedeDto);
+    const data = await this.sedeRepository.save(createSedeDto);
+
+    return instanceToPlain(data);
   }
 
   async findAll() {
-    return await this.sedeRepository.find({
+    const data = await this.sedeRepository.find({
       where: {
         isDeleted: false,
       },
     });
+
+    return instanceToPlain(data);
   }
 
   async findOne(id: string) {
@@ -44,7 +49,7 @@ export class SedeService {
       throw new NotFoundException("Sede not found");
     }
 
-    return sede;
+    return instanceToPlain(sede);
   }
 
   async update(id: string, updateSedeDto: UpdateSedeDto) {
