@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
 
 import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
@@ -12,6 +12,7 @@ import { Company } from "./entities/company.entity";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { StateNumberModel } from "types/state.model";
 import { instanceToPlain } from "class-transformer";
+import { PaginationCompanyModel } from "types/company.model";
 
 @Injectable()
 export class CompanyService {
@@ -30,14 +31,30 @@ export class CompanyService {
     return instanceToPlain(data);
   }
 
-  async findAll() {
-    const data = await this.companyRepository.find({
-      where: {
-        isDeleted: false,
-      },
+  async findAll(params: PaginationCompanyModel) {
+    const { page, limit, name, stateId } = params;
+
+    const where: FindOptionsWhere<any> = { isDeleted: false };
+
+    if (name) {
+      where["name"] = ILike(`%${name}%`);
+    }
+    if (stateId) {
+      where["stateId"] = stateId;
+    }
+
+    const [data, total] = await this.companyRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    return instanceToPlain(data);
+    return {
+      data: instanceToPlain(data),
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

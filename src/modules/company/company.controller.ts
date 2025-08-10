@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Res,
+  Query,
 } from "@nestjs/common";
 import { CompanyService } from "./company.service";
 import { CreateCompanyDto } from "./dto/create-company.dto";
@@ -44,9 +45,20 @@ export class CompanyController {
 
   @Get()
   @ApiOperation({ summary: "Get all companies" })
-  async findAll(@Res() res: Response) {
+  async findAll(
+    @Res() res: Response,
+    @Query("page") page: string,
+    @Query("limit") limit: string,
+    @Query("name") name?: string,
+    @Query("stateId") stateId?: string,
+  ) {
     try {
-      const data = await this.companyService.findAll();
+      const data = await this.companyService.findAll({
+        page: Number(page),
+        limit: Number(limit),
+        stateId: Number(stateId),
+        name,
+      });
       return sendResponse(
         data,
         "Companies found",
