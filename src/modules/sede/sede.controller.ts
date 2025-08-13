@@ -1,22 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
   Res,
 } from "@nestjs/common";
-import { SedeService } from "./sede.service";
-import { CreateSedeDto } from "./dto/create-sede.dto";
-import { UpdateSedeDto } from "./dto/update-sede.dto";
-import { StatusModel } from "types/status.model";
 import { ApiOperation } from "@nestjs/swagger";
-import { sendResponse } from "src/utils/send-response";
-import { validateError } from "src/utils/validate-error";
 import { Response } from "express";
 import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
+import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
+import { CreateSedeDto } from "./dto/create-sede.dto";
+import { UpdateSedeDto } from "./dto/update-sede.dto";
+import { SedeService } from "./sede.service";
 
 @Controller("sede")
 export class SedeController {
@@ -41,9 +42,20 @@ export class SedeController {
 
   @Get()
   @ApiOperation({ summary: "Get all sedes" })
-  async findAll(@Res() res: Response) {
+  async findAll(
+    @Res() res: Response,
+    @Query("page") page: string,
+    @Query("limit") limit: string,
+    @Query("name") name?: string,
+    @Query("stateId") stateId?: string,
+  ) {
     try {
-      const data = await this.sedeService.findAll();
+      const data = await this.sedeService.findAll({
+        page: Number(page),
+        limit: Number(limit),
+        stateId: Number(stateId),
+        name,
+      });
       return sendResponse(
         data,
         "Sedes found",

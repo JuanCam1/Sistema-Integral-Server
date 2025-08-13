@@ -3,14 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { instanceToPlain } from "class-transformer";
+import { capitalizeText } from "src/utils/capitalize-text";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
+import { PaginationCompanyModel } from "types/company.model";
+import { StateNumberModel } from "types/state.model";
 import { CreateSedeDto } from "./dto/create-sede.dto";
 import { UpdateSedeDto } from "./dto/update-sede.dto";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Sede } from "./entities/sede.entity";
-import { Repository } from "typeorm";
-import { capitalizeText } from "src/utils/capitalize-text";
-import { StateNumberModel } from "types/state.model";
-import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class SedeService {
@@ -32,14 +33,31 @@ export class SedeService {
     return instanceToPlain(data);
   }
 
-  async findAll() {
-    const data = await this.sedeRepository.find({
-      where: {
-        isDeleted: false,
-      },
+  async findAll(params: PaginationCompanyModel) {
+    const { page, limit, name, stateId } = params;
+
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    const where: FindOptionsWhere<any> = { isDeleted: false };
+
+    if (name) {
+      where["name"] = ILike(`%${name}%`);
+    }
+    if (stateId) {
+      where["stateId"] = stateId;
+    }
+
+    const [data, total] = await this.sedeRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    return instanceToPlain(data);
+    return {
+      data: instanceToPlain(data),
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

@@ -4,15 +4,14 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { instanceToPlain } from "class-transformer";
+import { capitalizeText } from "src/utils/capitalize-text";
 import { FindOptionsWhere, ILike, Repository } from "typeorm";
-
+import { PaginationCompanyModel } from "types/company.model";
+import { StateNumberModel } from "types/state.model";
 import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
 import { Company } from "./entities/company.entity";
-import { capitalizeText } from "src/utils/capitalize-text";
-import { StateNumberModel } from "types/state.model";
-import { instanceToPlain } from "class-transformer";
-import { PaginationCompanyModel } from "types/company.model";
 
 @Injectable()
 export class CompanyService {
