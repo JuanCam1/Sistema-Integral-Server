@@ -14,14 +14,23 @@ export class CompanyPlatform {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Platform, (p) => p.companyPlatforms)
+  @ManyToOne(
+    () => Platform,
+    (p) => p.companyPlatforms,
+  )
   @JoinColumn({ name: "platformId" })
   platform: Platform;
 
-  @ManyToOne(() => Company, (c) => c.companyPlatforms)
+  @ManyToOne(
+    () => Company,
+    (c) => c.companyPlatforms,
+  )
   @JoinColumn({ name: "companyId" })
   company: Company;
 
-  @OneToMany(() => Task, (task) => task.companyPlatform)
+  @OneToMany(
+    () => Task,
+    (task) => task.companyPlatform,
+  )
   tasks: Task[];
 }

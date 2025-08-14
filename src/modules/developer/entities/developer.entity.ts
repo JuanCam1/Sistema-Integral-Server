@@ -21,6 +21,9 @@ export class Developer {
   @Column({ default: 1 })
   configId: number;
 
-  @ManyToOne(() => Config, (config) => config.developers)
+  @ManyToOne(
+    () => Config,
+    (config) => config.developers,
+  )
   config: Config;
 }

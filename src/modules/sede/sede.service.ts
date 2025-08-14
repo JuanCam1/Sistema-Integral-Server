@@ -7,7 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { instanceToPlain } from "class-transformer";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { FindOptionsWhere, ILike, Repository } from "typeorm";
-import { PaginationCompanyModel } from "types/company.model";
+import { PaginationModel } from "types/pagination.model";
 import { StateNumberModel } from "types/state.model";
 import { CreateSedeDto } from "./dto/create-sede.dto";
 import { UpdateSedeDto } from "./dto/update-sede.dto";
@@ -33,7 +33,7 @@ export class SedeService {
     return instanceToPlain(data);
   }
 
-  async findAll(params: PaginationCompanyModel) {
+  async findAll(params: PaginationModel) {
     const { page, limit, name, stateId } = params;
 
     // biome-ignore lint/suspicious/noExplicitAny: any
@@ -58,6 +58,14 @@ export class SedeService {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
     };
+  }
+
+  async findAllSedes() {
+    return await this.sedeRepository.find({
+      where: {
+        isDeleted: false,
+      },
+    });
   }
 
   async findOne(id: string) {

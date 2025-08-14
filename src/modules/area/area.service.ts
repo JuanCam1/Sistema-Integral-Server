@@ -3,13 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { instanceToPlain } from "class-transformer";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
+import { PaginationAreaModel } from "types/area.model";
+import { PaginationModel } from "types/pagination.model";
+import { StateNumberModel } from "types/state.model";
 import { CreateAreaDto } from "./dto/create-area.dto";
 import { UpdateAreaDto } from "./dto/update-area.dto";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Area } from "./entities/area.entity";
-import { Repository } from "typeorm";
-import { StateNumberModel } from "types/state.model";
-import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class AreaService {
@@ -22,14 +24,34 @@ export class AreaService {
     return "This action adds a new area " + JSON.stringify(createAreaDto);
   }
 
-  async findAll() {
-    const data = await this.areaRepository.find({
-      where: {
-        isDeleted: false,
-      },
+  async findAll(params: PaginationAreaModel) {
+    const { page, limit, name, stateId, sedeId } = params;
+
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    const where: FindOptionsWhere<any> = { isDeleted: false };
+
+    if (name) {
+      where["name"] = ILike(`%${name}%`);
+    }
+    if (stateId) {
+      where["stateId"] = stateId;
+    }
+    if (sedeId) {
+      where["sedeId"] = sedeId;
+    }
+
+    const [data, total] = await this.areaRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    return instanceToPlain(data);
+    return {
+      data: instanceToPlain(data),
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

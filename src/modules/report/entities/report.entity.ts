@@ -27,7 +27,10 @@ export class Report {
   @Column()
   updatedAt: Date;
 
-  @ManyToOne(() => Manual, (p) => p.reports)
+  @ManyToOne(
+    () => Manual,
+    (p) => p.reports,
+  )
   @JoinColumn({ name: "manualId" })
   manual: Manual;
 }

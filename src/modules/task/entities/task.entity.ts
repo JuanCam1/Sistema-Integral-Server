@@ -32,26 +32,44 @@ export class Task {
   @Column()
   updatedAt: Date;
 
-  @ManyToOne(() => Area, (area) => area.tasks)
+  @ManyToOne(
+    () => Area,
+    (area) => area.tasks,
+  )
   @JoinColumn({ name: "areaId" })
   area: Area;
 
-  @ManyToOne(() => CompanyPlatform, (cp) => cp.tasks)
+  @ManyToOne(
+    () => CompanyPlatform,
+    (cp) => cp.tasks,
+  )
   @JoinColumn({ name: "companyPlatformId" })
   companyPlatform: CompanyPlatform;
 
-  @ManyToOne(() => User, (user) => user.tasks)
+  @ManyToOne(
+    () => User,
+    (user) => user.tasks,
+  )
   @JoinColumn({ name: "supervisorId" })
   user: User;
 
-  @ManyToOne(() => User, (user) => user.tasks)
+  @ManyToOne(
+    () => User,
+    (user) => user.tasks,
+  )
   @JoinColumn({ name: "userId" })
   supervisedTasks: User;
 
-  @ManyToOne(() => Periodicity, (p) => p.tasks)
+  @ManyToOne(
+    () => Periodicity,
+    (p) => p.tasks,
+  )
   @JoinColumn({ name: "periodicityId" })
   periodicity: Periodicity;
 
-  @OneToMany(() => ReportHistory, (rh) => rh.task)
+  @OneToMany(
+    () => ReportHistory,
+    (rh) => rh.task,
+  )
   reportHistories: ReportHistory[];
 }

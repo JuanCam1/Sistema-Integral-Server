@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ManualService } from './manual.service';
-import { CreateManualDto } from './dto/create-manual.dto';
-import { UpdateManualDto } from './dto/update-manual.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { ManualService } from "./manual.service";
+import { CreateManualDto } from "./dto/create-manual.dto";
+import { UpdateManualDto } from "./dto/update-manual.dto";
 
-@Controller('manual')
+@Controller("manual")
 export class ManualController {
   constructor(private readonly manualService: ManualService) {}
 
@@ -17,18 +25,18 @@ export class ManualController {
     return this.manualService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.manualService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateManualDto: UpdateManualDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateManualDto: UpdateManualDto) {
     return this.manualService.update(+id, updateManualDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.manualService.remove(+id);
   }
 }

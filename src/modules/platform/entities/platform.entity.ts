@@ -33,6 +33,9 @@ export class Platform {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(() => CompanyPlatform, (cp) => cp.platform)
+  @OneToMany(
+    () => CompanyPlatform,
+    (cp) => cp.platform,
+  )
   companyPlatforms: CompanyPlatform[];
 }

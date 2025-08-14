@@ -9,6 +9,9 @@ export class UserType {
   @Column()
   name: string;
 
-  @OneToMany(() => User, (user) => user.userType)
+  @OneToMany(
+    () => User,
+    (user) => user.userType,
+  )
   users: User[];
 }

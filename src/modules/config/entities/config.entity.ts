@@ -18,6 +18,9 @@ export class Config {
   @Column()
   email: string;
 
-  @OneToMany(() => Developer, (developer) => developer.config)
+  @OneToMany(
+    () => Developer,
+    (developer) => developer.config,
+  )
   developers: Developer[];
 }

@@ -1,4 +1,4 @@
-export interface PaginationCompanyModel {
+export interface PaginationModel {
   page: number;
   limit: number;
   stateId?: number;

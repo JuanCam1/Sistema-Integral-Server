@@ -67,6 +67,25 @@ export class SedeController {
       return validateError(error, res);
     }
   }
+  
+  @Get("findAll")
+  @ApiOperation({ summary: "Get all sedes" })
+  async findAllSedes(
+    @Res() res: Response,
+  ) {
+    try {
+      const data = await this.sedeService.findAllSedes();
+      return sendResponse(
+        data,
+        "Sedes found",
+        StatusModel.SUCCESS,
+        res,
+        HttpCode.OK,
+      );
+    } catch (error) {
+      return validateError(error, res);
+    }
+  }
 
   @Get(":id")
   @ApiOperation({ summary: "Get a sede by id" })

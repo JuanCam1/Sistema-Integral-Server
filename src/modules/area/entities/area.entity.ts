@@ -45,13 +45,23 @@ export class Area {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @ManyToOne(() => Sede, (sede) => sede.areas, { eager: true })
+  @ManyToOne(
+    () => Sede,
+    (sede) => sede.areas,
+    { eager: true },
+  )
   @JoinColumn({ name: "sedeId" })
   sede: Sede;
 
-  @OneToMany(() => User, (user) => user.area)
+  @OneToMany(
+    () => User,
+    (user) => user.area,
+  )
   users: User[];
 
-  @OneToMany(() => Task, (task) => task.area)
+  @OneToMany(
+    () => Task,
+    (task) => task.area,
+  )
   tasks: Task[];
 }

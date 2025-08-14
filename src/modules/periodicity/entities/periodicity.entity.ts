@@ -26,6 +26,9 @@ export class Periodicity {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(() => Task, (task) => task.periodicity)
+  @OneToMany(
+    () => Task,
+    (task) => task.periodicity,
+  )
   tasks: Task[];
 }

@@ -1,22 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
   Res,
 } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
+import { Response } from "express";
+import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
+import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
 import { AreaService } from "./area.service";
 import { CreateAreaDto } from "./dto/create-area.dto";
 import { UpdateAreaDto } from "./dto/update-area.dto";
-import { ApiOperation } from "@nestjs/swagger";
-import { sendResponse } from "src/utils/send-response";
-import { StatusModel } from "types/status.model";
-import { HttpCode } from "src/utils/http-code";
-import { Response } from "express";
-import { validateError } from "src/utils/validate-error";
 
 @Controller("area")
 export class AreaController {
@@ -40,9 +41,21 @@ export class AreaController {
 
   @Get()
   @ApiOperation({ summary: "Get all areas" })
-  async findAll(@Res() res: Response) {
+  async findAll(@Res() res: Response,
+@Query("page") page: string,
+    @Query("limit") limit: string,
+    @Query("name") name?: string,
+    @Query("stateId") stateId?: string,
+    @Query("sedeId") sedeId?: string,) {
     try {
-      const data = await this.areaService.findAll();
+      const data = await this.areaService.findAll({
+        page: Number(page),
+        limit: Number(limit),
+        stateId: Number(stateId),
+        sedeId: sedeId,
+        name,
+      });
+
       return sendResponse(
         data,
         "Areas found",

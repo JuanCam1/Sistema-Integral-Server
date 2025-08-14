@@ -12,6 +12,9 @@ export class Manual {
   @Column()
   value: string;
 
-  @OneToMany(() => Report, (report) => report.manual)
+  @OneToMany(
+    () => Report,
+    (report) => report.manual,
+  )
   reports: Report[];
 }

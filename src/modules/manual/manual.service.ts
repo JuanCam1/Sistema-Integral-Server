@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { CreateManualDto } from './dto/create-manual.dto';
-import { UpdateManualDto } from './dto/update-manual.dto';
+import { Injectable } from "@nestjs/common";
+import { CreateManualDto } from "./dto/create-manual.dto";
+import { UpdateManualDto } from "./dto/update-manual.dto";
 
 @Injectable()
 export class ManualService {
   create(createManualDto: CreateManualDto) {
-    return 'This action adds a new manual';
+    return "This action adds a new manual";
   }
 
   findAll() {

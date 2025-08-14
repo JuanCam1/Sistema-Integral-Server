@@ -15,6 +15,9 @@ export class Image {
   @Column()
   mimetype: string;
 
-  @OneToMany(() => User, (user) => user.userType)
+  @OneToMany(
+    () => User,
+    (user) => user.userType,
+  )
   users: User[];
 }

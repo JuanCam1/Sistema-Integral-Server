@@ -36,6 +36,9 @@ export class Sede {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(() => Area, (area) => area.sede)
+  @OneToMany(
+    () => Area,
+    (area) => area.sede,
+  )
   areas: Area[];
 }

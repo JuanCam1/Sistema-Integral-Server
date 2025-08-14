@@ -40,15 +40,24 @@ export class ReportHistory {
   @Column()
   was_approved: boolean;
 
-  @ManyToOne(() => Task, (task) => task.reportHistories)
+  @ManyToOne(
+    () => Task,
+    (task) => task.reportHistories,
+  )
   @JoinColumn({ name: "taskId" })
   task: Task;
 
-  @ManyToOne(() => User, (user) => user.reportHistories)
+  @ManyToOne(
+    () => User,
+    (user) => user.reportHistories,
+  )
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToOne(() => User, (user) => user.supervisedReportsHistories)
+  @ManyToOne(
+    () => User,
+    (user) => user.supervisedReportsHistories,
+  )
   @JoinColumn({ name: "supervisorId" })
   supervisor: User;
 }

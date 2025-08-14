@@ -70,15 +70,27 @@ export class User {
   @Column()
   stateId: number;
 
-  @ManyToOne(() => UserType, (userType) => userType.users, { eager: true })
+  @ManyToOne(
+    () => UserType,
+    (userType) => userType.users,
+    { eager: true },
+  )
   @JoinColumn({ name: "userTypeId" })
   userType: UserType;
 
-  @ManyToOne(() => Area, (area) => area.users, { eager: true, nullable: true })
+  @ManyToOne(
+    () => Area,
+    (area) => area.users,
+    { eager: true, nullable: true },
+  )
   @JoinColumn({ name: "areaId" })
   area: Area | null;
 
-  @ManyToOne(() => Image, (img) => img.users, { eager: true })
+  @ManyToOne(
+    () => Image,
+    (img) => img.users,
+    { eager: true },
+  )
   @JoinColumn({ name: "imageId" })
   image: Image;
 
@@ -86,15 +98,27 @@ export class User {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(() => Task, (task) => task.user)
+  @OneToMany(
+    () => Task,
+    (task) => task.user,
+  )
   tasks: Task[];
 
-  @OneToMany(() => Task, (task) => task.supervisedTasks)
+  @OneToMany(
+    () => Task,
+    (task) => task.supervisedTasks,
+  )
   supervisedTasks: Task[];
 
-  @OneToMany(() => ReportHistory, (rp) => rp.user)
+  @OneToMany(
+    () => ReportHistory,
+    (rp) => rp.user,
+  )
   reportHistories: ReportHistory[];
 
-  @OneToMany(() => ReportHistory, (rp) => rp.supervisor)
+  @OneToMany(
+    () => ReportHistory,
+    (rp) => rp.supervisor,
+  )
   supervisedReportsHistories: ReportHistory[];
 }
