@@ -56,7 +56,7 @@ export class SedeService {
       data: instanceToPlain(data),
       total,
       currentPage: page,
-      totalPages: Math.ceil(total / limit),
+      totalPage: Math.ceil(total / limit),
     };
   }
 
