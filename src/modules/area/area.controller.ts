@@ -41,18 +41,18 @@ export class AreaController {
 
   @Get()
   @ApiOperation({ summary: "Get all areas" })
-  async findAll(@Res() res: Response,
-@Query("page") page: string,
+  async findAll(
+    @Res() res: Response,
+    @Query("page") page: string,
     @Query("limit") limit: string,
     @Query("name") name?: string,
     @Query("stateId") stateId?: string,
-    @Query("sedeId") sedeId?: string,) {
+  ) {
     try {
       const data = await this.areaService.findAll({
         page: Number(page),
         limit: Number(limit),
         stateId: Number(stateId),
-        sedeId: sedeId,
         name,
       });
 
@@ -69,6 +69,7 @@ export class AreaController {
   }
 
   @Get(":id")
+  @ApiOperation({ summary: "Get by id" })
   async findOne(@Param("id") id: string, @Res() res: Response) {
     try {
       const data = await this.areaService.findOne(id);

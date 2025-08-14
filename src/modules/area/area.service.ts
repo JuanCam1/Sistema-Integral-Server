@@ -24,20 +24,25 @@ export class AreaService {
     return "This action adds a new area " + JSON.stringify(createAreaDto);
   }
 
-  async findAll(params: PaginationAreaModel) {
-    const { page, limit, name, stateId, sedeId } = params;
+  async findAll(params: PaginationModel) {
+    const { page, limit, name, stateId } = params;
 
     // biome-ignore lint/suspicious/noExplicitAny: any
-    const where: FindOptionsWhere<any> = { isDeleted: false };
+    let where: FindOptionsWhere<any> = { isDeleted: false };
 
-    if (name) {
-      where["name"] = ILike(`%${name}%`);
-    }
     if (stateId) {
       where["stateId"] = stateId;
     }
-    if (sedeId) {
-      where["sedeId"] = sedeId;
+
+    if (name) {
+      where = [
+        {
+          name: ILike(`%${name}%`),
+        },
+        {
+          sede: { name: ILike(`%${name}%`) },
+        },
+      ];
     }
 
     const [data, total] = await this.areaRepository.findAndCount({
