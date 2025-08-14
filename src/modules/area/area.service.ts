@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { instanceToPlain } from "class-transformer";
 import { FindOptionsWhere, ILike, Repository } from "typeorm";
-import { PaginationAreaModel } from "types/area.model";
 import { PaginationModel } from "types/pagination.model";
 import { StateNumberModel } from "types/state.model";
 import { CreateAreaDto } from "./dto/create-area.dto";

@@ -1,20 +1,21 @@
 import {
-  Controller,
-  Get,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Query,
   Res,
 } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { sendResponse } from "src/utils/send-response";
-import { StatusModel } from "types/status.model";
 import { ApiOperation } from "@nestjs/swagger";
 import { Response } from "express";
-import { validateError } from "src/utils/validate-error";
 import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
+import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserService } from "./user.service";
 
 @Controller("user")
 export class UserController {
@@ -22,9 +23,22 @@ export class UserController {
 
   @Get(":id")
   @ApiOperation({ summary: "Get a user by id" })
-  async findAllExceptId(@Param("id") id: string, @Res() res: Response) {
+  async findAllExceptId(
+    @Param("id") id: string,
+    @Res() res: Response,
+    @Query("page") page: string,
+    @Query("limit") limit: string,
+    @Query("name") name?: string,
+    @Query("stateId") stateId?: string,
+  ) {
     try {
-      const data = await this.userService.findAllExceptId(id);
+      const data = await this.userService.findAllExceptId({
+        id,
+        page: Number(page),
+        limit: Number(limit),
+        stateId: Number(stateId),
+        name,
+      });
       return sendResponse(
         data,
         "Users found",

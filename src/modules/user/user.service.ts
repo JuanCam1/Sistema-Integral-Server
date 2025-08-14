@@ -3,17 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Not, Repository } from "typeorm";
-import { User } from "./entities/user.entity";
-import { StateModel, StateNumberModel } from "types/state.model";
+import { instanceToPlain } from "class-transformer";
 import { Image } from "src/modules/image/entities/image.entity";
 import { ImageService } from "src/modules/image/image.service";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { currentDate } from "src/utils/current-date-hour";
-import { instanceToPlain } from "class-transformer";
+import { FindOptionsWhere, ILike, Not, Repository } from "typeorm";
+import { StateModel, StateNumberModel } from "types/state.model";
+import { PaginationUserModel } from "types/user.model";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
 
 @Injectable()
 export class UserService {
@@ -48,17 +49,54 @@ export class UserService {
     return instanceToPlain(data);
   }
 
-  async findAllExceptId(id: string) {
-    const data = await this.userRepository.find({
-      where: {
-        id: Not(id),
-        state: {
-          name: StateModel.ACTIVE,
+  async findAllExceptId(params: PaginationUserModel) {
+    const { id, limit, page, name, stateId } = params;
+
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    let where: FindOptionsWhere<any> = {
+      isDeleted: false,
+      id: Not(id),
+    };
+
+    if (stateId) {
+      where["stateId"] = stateId;
+    }
+
+    if (name) {
+      where = [
+        {
+          name: ILike(`%${name}%`),
         },
-        isDeleted: false,
-      },
+        {
+          cedula: ILike(`%${name}%`),
+        },
+        {
+          email: ILike(`%${name}%`),
+        },
+        {
+          profile: ILike(`%${name}%`),
+        },
+        {
+          area: { name: ILike(`%${name}%`) },
+        },
+        {
+          userType: { name: ILike(`%${name}%`) },
+        },
+      ];
+    }
+
+    const [data, total] = await this.userRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
-    return instanceToPlain(data);
+
+    return {
+      data: instanceToPlain(data),
+      total,
+      currentPage: page,
+      totalPage: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {
