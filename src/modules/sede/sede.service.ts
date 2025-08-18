@@ -28,9 +28,7 @@ export class SedeService {
     createSedeDto.name = capitalizeName;
     createSedeDto.address = capitalizeAddress;
     createSedeDto.ubication = capitalizeUbication;
-    const data = await this.sedeRepository.save(createSedeDto);
-
-    return instanceToPlain(data);
+    await this.sedeRepository.save(createSedeDto);
   }
 
   async findAll(params: PaginationModel) {
@@ -50,6 +48,7 @@ export class SedeService {
       where,
       skip: (page - 1) * limit,
       take: limit,
+      order: { name: "ASC" },
     });
 
     return {

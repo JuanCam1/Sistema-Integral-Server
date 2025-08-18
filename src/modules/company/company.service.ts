@@ -20,14 +20,13 @@ export class CompanyService {
     private readonly companyRepository: Repository<Company>,
   ) {}
 
-  async create(createCompanyDto: CreateCompanyDto) {
+  async create(createCompanyDto: CreateCompanyDto): Promise<void> {
     const capitalizeName = capitalizeText(createCompanyDto.name);
     const capitalizeAddress = capitalizeText(createCompanyDto.address);
 
     createCompanyDto.name = capitalizeName;
     createCompanyDto.address = capitalizeAddress;
-    const data = await this.companyRepository.save(createCompanyDto);
-    return instanceToPlain(data);
+    await this.companyRepository.save(createCompanyDto);
   }
 
   async findAll(params: PaginationModel) {
@@ -47,6 +46,7 @@ export class CompanyService {
       where,
       skip: (page - 1) * limit,
       take: limit,
+      order: { name: "ASC" },
     });
 
     return {

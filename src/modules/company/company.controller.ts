@@ -1,23 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  Res,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  Res,
 } from "@nestjs/common";
-import { CompanyService } from "./company.service";
-import { CreateCompanyDto } from "./dto/create-company.dto";
-import { UpdateCompanyDto } from "./dto/update-company.dto";
-import { StatusModel } from "types/status.model";
-import { sendResponse } from "src/utils/send-response";
 import { ApiOperation } from "@nestjs/swagger";
 import { Response } from "express";
 import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
 import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
+import { CompanyService } from "./company.service";
+import { CreateCompanyDto } from "./dto/create-company.dto";
+import { UpdateCompanyDto } from "./dto/update-company.dto";
 
 @Controller("company")
 export class CompanyController {
@@ -30,9 +30,9 @@ export class CompanyController {
     @Res() res: Response,
   ) {
     try {
-      const data = await this.companyService.create(createCompanyDto);
+      await this.companyService.create(createCompanyDto);
       return sendResponse(
-        data,
+        null,
         "Company created",
         StatusModel.SUCCESS,
         res,

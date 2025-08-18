@@ -10,7 +10,7 @@ import { ImageService } from "src/modules/image/image.service";
 import { capitalizeText } from "src/utils/capitalize-text";
 import { currentDate } from "src/utils/current-date-hour";
 import { FindOptionsWhere, ILike, Not, Repository } from "typeorm";
-import { StateModel, StateNumberModel } from "types/state.model";
+import { StateNumberModel } from "types/state.model";
 import { PaginationUserModel } from "types/user.model";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";

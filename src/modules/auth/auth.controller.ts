@@ -1,22 +1,22 @@
 import {
+  Body,
   Controller,
   Post,
-  Body,
-  UseInterceptors,
-  UploadedFile,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { RegisterDto } from "./dto/register.dto";
-import { LoginDto } from "./dto/login.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { memoryStorage } from "multer";
 import { ApiBody, ApiConsumes, ApiOperation } from "@nestjs/swagger";
-import { sendResponse } from "src/utils/send-response";
-import { StatusModel } from "types/status.model";
-import { HttpCode } from "src/utils/http-code";
 import { Response } from "express";
+import { memoryStorage } from "multer";
+import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
 import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
+import { AuthService } from "./auth.service";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 
 @Controller("auth")
 export class AuthController {

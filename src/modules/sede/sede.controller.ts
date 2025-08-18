@@ -27,9 +27,9 @@ export class SedeController {
   @ApiOperation({ summary: "Create a new sede" })
   async create(@Body() createSedeDto: CreateSedeDto, @Res() res: Response) {
     try {
-      const data = await this.sedeService.create(createSedeDto);
+      await this.sedeService.create(createSedeDto);
       return sendResponse(
-        data,
+        null,
         "Sede created",
         StatusModel.SUCCESS,
         res,
@@ -67,12 +67,10 @@ export class SedeController {
       return validateError(error, res);
     }
   }
-  
+
   @Get("findAll")
   @ApiOperation({ summary: "Get all sedes" })
-  async findAllSedes(
-    @Res() res: Response,
-  ) {
+  async findAllSedes(@Res() res: Response) {
     try {
       const data = await this.sedeService.findAllSedes();
       return sendResponse(

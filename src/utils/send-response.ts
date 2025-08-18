@@ -6,12 +6,12 @@ export const sendResponse = <T>(
   message: string,
   state: StatusModel,
   res: Response,
-  codeError: number,
+  code: number,
 ) => {
-  return res.status(codeError).json({
+  return res.status(code).json({
     data,
     message,
     state,
-    codeError,
+    code,
   });
 };
