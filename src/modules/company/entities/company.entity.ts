@@ -1,5 +1,5 @@
 import { Exclude } from "class-transformer";
-import { CompanyPlatform } from "src/modules/company-platform/entities/company-platform.entity";
+import { Platform } from "src/modules/platform/entities/platform.entity";
 import { State } from "src/modules/state/entities/state.entity";
 import {
   Column,
@@ -40,8 +40,8 @@ export class Company {
   state: State;
 
   @OneToMany(
-    () => CompanyPlatform,
-    (cp) => cp.company,
+    () => Platform,
+    (p) => p.company,
   )
-  companyPlatforms: CompanyPlatform[];
+  platforms: Platform[];
 }

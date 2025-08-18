@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { instanceToPlain } from "class-transformer";
+import { FindOptionsWhere, ILike, Repository } from "typeorm";
+import { PaginationModel } from "types/pagination.model";
+import { StateNumberModel } from "types/state.model";
 import { CreatePlatformDto } from "./dto/create-platform.dto";
 import { UpdatePlatformDto } from "./dto/update-platform.dto";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Platform } from "./entities/platform.entity";
-import { Repository } from "typeorm";
-import { capitalizeText } from "src/utils/capitalize-text";
-import { StateNumberModel } from "types/state.model";
-import { instanceToPlain } from "class-transformer";
 
 @Injectable()
 export class PlatformService {
@@ -20,22 +20,41 @@ export class PlatformService {
   ) {}
 
   async create(createPlatformDto: CreatePlatformDto) {
-    const capitalizeName = capitalizeText(createPlatformDto.name);
-
-    createPlatformDto.name = capitalizeName;
-    const data = await this.platformRepository.save(createPlatformDto);
-
-    return instanceToPlain(data);
+    await this.platformRepository.save(createPlatformDto);
   }
 
-  async findAll() {
-    const data = await this.platformRepository.find({
-      where: {
-        isDeleted: false,
-      },
+  async findAll(params: PaginationModel) {
+    const { page, limit, name, stateId } = params;
+
+    // biome-ignore lint/suspicious/noExplicitAny: any
+    let where: FindOptionsWhere<any> = { isDeleted: false };
+
+    if (stateId) {
+      where["stateId"] = stateId;
+    }
+
+    if (name) {
+      where = [
+        {
+          name: ILike(`%${name}%`),
+        },
+        {
+          company: { name: ILike(`%${name}%`) },
+        },
+      ];
+    }
+    const [data, total] = await this.platformRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    return instanceToPlain(data);
+    return {
+      data: instanceToPlain(data),
+      total,
+      currentPage: page,
+      totalPage: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {
@@ -54,12 +73,6 @@ export class PlatformService {
     if (!platform) {
       throw new NotFoundException("Platform not found");
     }
-
-    const capitalizeName = updatePlatformDto.name
-      ? capitalizeText(updatePlatformDto.name)
-      : Platform.name;
-
-    updatePlatformDto.name = capitalizeName;
 
     const result = await this.platformRepository.update(id, updatePlatformDto);
 

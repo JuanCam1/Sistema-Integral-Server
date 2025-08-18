@@ -1,6 +1,6 @@
 import { Area } from "src/modules/area/entities/area.entity";
-import { CompanyPlatform } from "src/modules/company-platform/entities/company-platform.entity";
 import { Periodicity } from "src/modules/periodicity/entities/periodicity.entity";
+import { Platform } from "src/modules/platform/entities/platform.entity";
 import { ReportHistory } from "src/modules/report-history/entities/report-history.entity";
 import { User } from "src/modules/user/entities/user.entity";
 import {
@@ -40,11 +40,11 @@ export class Task {
   area: Area;
 
   @ManyToOne(
-    () => CompanyPlatform,
-    (cp) => cp.tasks,
+    () => Platform,
+    (p) => p.tasks,
   )
-  @JoinColumn({ name: "companyPlatformId" })
-  companyPlatform: CompanyPlatform;
+  @JoinColumn({ name: "platformId" })
+  platform: Platform;
 
   @ManyToOne(
     () => User,

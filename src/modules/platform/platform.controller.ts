@@ -1,22 +1,23 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
   Res,
 } from "@nestjs/common";
-import { PlatformService } from "./platform.service";
-import { CreatePlatformDto } from "./dto/create-platform.dto";
-import { UpdatePlatformDto } from "./dto/update-platform.dto";
 import { ApiOperation } from "@nestjs/swagger";
-import { StatusModel } from "types/status.model";
-import { sendResponse } from "src/utils/send-response";
 import { Response } from "express";
 import { HttpCode } from "src/utils/http-code";
+import { sendResponse } from "src/utils/send-response";
 import { validateError } from "src/utils/validate-error";
+import { StatusModel } from "types/status.model";
+import { CreatePlatformDto } from "./dto/create-platform.dto";
+import { UpdatePlatformDto } from "./dto/update-platform.dto";
+import { PlatformService } from "./platform.service";
 
 @Controller("platform")
 export class PlatformController {
@@ -29,9 +30,9 @@ export class PlatformController {
     @Res() res: Response,
   ) {
     try {
-      const data = await this.platformService.create(createPlatformDto);
+      await this.platformService.create(createPlatformDto);
       return sendResponse(
-        data,
+        null,
         "Platform created",
         StatusModel.SUCCESS,
         res,
@@ -44,9 +45,20 @@ export class PlatformController {
 
   @Get()
   @ApiOperation({ summary: "Get all platforms" })
-  async findAll(@Res() res: Response) {
+  async findAll(
+    @Res() res: Response,
+    @Query("page") page: string,
+    @Query("limit") limit: string,
+    @Query("name") name?: string,
+    @Query("stateId") stateId?: string,
+  ) {
     try {
-      const data = await this.platformService.findAll();
+      const data = await this.platformService.findAll({
+        page: Number(page),
+        limit: Number(limit),
+        stateId: Number(stateId),
+        name,
+      });
       return sendResponse(
         data,
         "Platform found",

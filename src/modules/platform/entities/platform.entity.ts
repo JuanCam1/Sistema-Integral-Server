@@ -1,6 +1,7 @@
 import { Exclude } from "class-transformer";
-import { CompanyPlatform } from "src/modules/company-platform/entities/company-platform.entity";
+import { Company } from "src/modules/company/entities/company.entity";
 import { State } from "src/modules/state/entities/state.entity";
+import { Task } from "src/modules/task/entities/task.entity";
 import {
   Column,
   Entity,
@@ -15,9 +16,7 @@ export class Platform {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ unique: true })
-  name: string;
-
+  @Column({ unique: true }) name: string;
   @Column()
   website: string;
 
@@ -33,9 +32,17 @@ export class Platform {
   @JoinColumn({ name: "stateId" })
   state: State;
 
-  @OneToMany(
-    () => CompanyPlatform,
-    (cp) => cp.platform,
+  @ManyToOne(
+    () => Company,
+    (company) => company.platforms,
+    { eager: true },
   )
-  companyPlatforms: CompanyPlatform[];
+  @JoinColumn({ name: "companyId" })
+  company: Company;
+
+  @OneToMany(
+    () => Task,
+    (task) => task.platform,
+  )
+  tasks: Task[];
 }
